@@ -1,3 +1,7 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include "shell.h"
 #define SIZE 256
 
@@ -47,7 +51,7 @@ int loop()
     return 0;
 }
 
-char **tokenize(char * input)
+char **tokenize(char *input)
 {
     char **args = (char **)calloc(sizeof(char *), SIZE);
     int i = 0;
@@ -61,6 +65,11 @@ int execute()
 {
     if (cmd[0] == '\0')
         return 0;
+
+    for (int i = 0; i < builtin_count; ++i) {
+        if (strcmp(cmd, builtin_names[i]) == 0)
+            return builtins[i](args);
+    }
 
     if (execvp(cmd, args) < 0) {
         fprintf(stderr, "exec failed\n");
