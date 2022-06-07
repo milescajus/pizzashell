@@ -8,6 +8,7 @@ char *pwd;      // dynamically allocated
 char *cmd;      // dynamically allocated
 char **args;    // dynamically allocated
 
+void update_time();
 int update_pwd();
 char **tokenize(char *input);
 int execute();

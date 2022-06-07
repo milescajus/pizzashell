@@ -10,11 +10,14 @@
 #define SIZE 256
 
 int ret;
-time_t cur_time;
+time_t rawtime;
+struct tm *timeinfo;
+char *time_str;
 
 int main()
 {
     ret = 0;
+    time_str = (char *)calloc(sizeof(char), 8);
     cmd = (char *)calloc(sizeof(char), SIZE);
     pwd = (char *)calloc(sizeof(char), MAXPATHLEN);
     args = (char **)calloc(sizeof(char *), SIZE);
@@ -32,8 +35,8 @@ int main()
 
 int loop()
 {
-    cur_time = time(NULL);
-    printf("\n%s @ %s", pwd, ctime(&cur_time));
+    update_time();
+    printf("\n\033[31;1m%s\033[0m [%s]\n", pwd, time_str);
     cmd = readline("🍕> ");
 
     if (cmd == NULL)
@@ -47,6 +50,12 @@ int loop()
     return execute();
 }
 
+void update_time()
+{
+    rawtime = time(NULL);
+    timeinfo = localtime(&rawtime);
+    strftime(time_str, 8, "%H:%M:%S", timeinfo);
+}
 
 char **tokenize(char *input)
 {
