@@ -1,4 +1,6 @@
 #pragma once
+#ifndef SHELL_H
+#define SHELL_H
 
 int update_env();
 char **tokenize(char *input);
@@ -13,3 +15,5 @@ int help(char **args);
 
 int (*builtins[]) (char **) = {&cd, &help};
 char *builtin_names[] = {"cd", "help"};
+
+#endif
