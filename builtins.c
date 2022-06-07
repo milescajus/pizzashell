@@ -21,7 +21,21 @@ int cd()
         args[1] = getenv("OLDPWD");
     }
 
-    setenv("OLDPWD", pwd, 1);
+    if (chdir(args[1]) < 0)
+        return -1;
 
-    return chdir(args[1]);
+    return update_pwd();
+}
+
+int update_pwd()
+{
+    if (setenv("OLDPWD", pwd, 1) < 0)
+        return -1;
+
+    pwd = getwd(NULL);
+
+    if (setenv("PWD", pwd, 1) < 0)
+        return -1;
+
+    return 0;
 }

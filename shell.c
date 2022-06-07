@@ -2,20 +2,26 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 #include <sys/param.h>
 #include <editline/readline.h>
 
 #include "shell.h"
 #define SIZE 256
 
+int ret;
+time_t cur_time;
+
 int main()
 {
-    int quit = 0;
+    ret = 0;
     cmd = (char *)calloc(sizeof(char), SIZE);
     pwd = (char *)calloc(sizeof(char), MAXPATHLEN);
     args = (char **)calloc(sizeof(char *), SIZE);
 
-    while (quit == 0) { quit = loop(); }
+    pwd = getwd(NULL);
+
+    while (ret < 1) { ret = loop(); }
 
     free(pwd);
     free(cmd);
@@ -26,8 +32,8 @@ int main()
 
 int loop()
 {
-    update_pwd();
-    printf("\n%s\n", getenv("PWD"));
+    cur_time = time(NULL);
+    printf("\n%s @ %s", pwd, ctime(&cur_time));
     cmd = readline("🍕> ");
 
     if (cmd == NULL)
@@ -41,11 +47,6 @@ int loop()
     return execute();
 }
 
-int update_pwd()
-{
-    getcwd(pwd, MAXPATHLEN);
-    return setenv("PWD", pwd, 1);
-}
 
 char **tokenize(char *input)
 {
