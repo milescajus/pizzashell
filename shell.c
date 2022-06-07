@@ -39,7 +39,7 @@ int loop()
 
     // print prompt
     printf("\n\033[31;1m%s\033[0m [%s]\n", pwd, time_str);
-    cmd = readline("🍕> ");
+    cmd = readline("🍕\033[38;5;220m$\033[0m ");
 
     // handle Ctrl-D
     if (cmd == NULL)
