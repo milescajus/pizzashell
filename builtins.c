@@ -19,9 +19,13 @@ int help()
 
 int cd()
 {
-    if (strcmp(args[1], "-") == 0) {
+    // change to previous dir
+    if (strcmp(args[1], "-") == 0)
         args[1] = getenv("OLDPWD");
-    }
+
+    // change to home dir, TODO: tilde-expansion
+    if (strcmp(args[1], "~") == 0)
+        args[1] = getenv("HOME");
 
     if (chdir(args[1]) < 0)
         return -1;
@@ -32,11 +36,14 @@ int cd()
 // HELPER FUNCTIONS
 int update_pwd()
 {
+    // set OLDPWD to previous dir
     if (setenv("OLDPWD", pwd, 1) < 0)
         return -1;
 
+    // get current dir
     pwd = getwd(NULL);
 
+    // update PWD to current dir
     if (setenv("PWD", pwd, 1) < 0)
         return -1;
 
