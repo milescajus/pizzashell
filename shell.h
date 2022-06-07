@@ -1,5 +1,6 @@
 #pragma once
 
+int update_env();
 char **tokenize(char *input);
 int execute();
 int loop();
