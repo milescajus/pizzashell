@@ -14,17 +14,21 @@ char **tokenize(char * input)
 int main()
 {
     pid_t pid;
+    char *line;
+    void *in;
+    char **args;
 
     while (1) {
-        char *line = (char *)calloc(sizeof(char), SIZE);
-        void *in = fgets(line, SIZE, stdin);
+        printf("🍕> ");
+        line = (char *)calloc(sizeof(char), SIZE);
+        in = fgets(line, SIZE, stdin);
 
         if (in == NULL)
-            return 0;
+            break;
 
         line[strlen(line) - 1] = '\0';
 
-        char **args = tokenize(line);
+        args = tokenize(line);
 
         pid = fork();
 
@@ -41,9 +45,9 @@ int main()
             wait(NULL);
         }
 
-        free(line);
-        free(args);
     }
 
-    return -1;
+    free(line);
+    free(args);
+    return 0;
 }
