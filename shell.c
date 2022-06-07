@@ -34,17 +34,11 @@ int main()
 int loop()
 {
     update_pwd();
-    /*
     printf("\n%s\n", getenv("PWD"));
-    printf("🍕> ");
-    in = fgets(cmd, SIZE, stdin);
-    */
     cmd = readline("🍕> ");
 
-    if (in == NULL)
-        return 1;
-
-    cmd[strlen(cmd) - 1] = '\0';
+    if (strlen(cmd) > 0)
+        add_history(cmd);
 
     args = tokenize(cmd);
 
