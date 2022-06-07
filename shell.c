@@ -58,10 +58,18 @@ char **tokenize(char *input)
 {
     // splits a char array by spaces and adds terminating null
 
-    int i = 0;
-    while ((args[i] = strsep(&input, " ")) != NULL) { i++; }
-    args[i] = NULL;
-    // TODO: handle dangling spaces
+    int len = 0;
+    while ((args[len] = strsep(&input, " ")) != NULL) { len++; }
+
+    // rudimentary way to terminate at 2 or more spaces
+    for (int i = 0; i < SIZE; ++i) {
+        if (args[i] == NULL)
+            break;
+        if (strcmp(args[i], "") == 0) {
+            args[i] = NULL;
+            break;
+        }
+    }
 
     return args;
 }
