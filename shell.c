@@ -9,13 +9,9 @@
 #include "shell.h"
 #define SIZE 256
 
-int ret;
-time_t rawtime;
-struct tm *timeinfo;
-char *time_str;
-
 int main()
 {
+    // initialize variables and alloc mem
     ret = 0;
     time_str = (char *)calloc(sizeof(char), 8);
     cmd = (char *)calloc(sizeof(char), SIZE);
@@ -26,22 +22,30 @@ int main()
 
     while (ret < 1) { ret = loop(); }
 
+    // free memory for graceful exit
     free(pwd);
     free(cmd);
     free(args);
+    free(time_str);
 
     exit(0);
 }
 
 int loop()
 {
+    // main prompt loop
+
     update_time();
+
+    // print prompt
     printf("\n\033[31;1m%s\033[0m [%s]\n", pwd, time_str);
     cmd = readline("🍕> ");
 
+    // handle Ctrl-D
     if (cmd == NULL)
         return 1;
 
+    // only add actual commands to hist
     if (strlen(cmd) > 0)
         add_history(cmd);
 
@@ -50,15 +54,10 @@ int loop()
     return execute();
 }
 
-void update_time()
-{
-    rawtime = time(NULL);
-    timeinfo = localtime(&rawtime);
-    strftime(time_str, 8, "%H:%M:%S", timeinfo);
-}
-
 char **tokenize(char *input)
 {
+    // splits a char array by spaces and adds terminating null
+
     int i = 0;
     while ((args[i] = strsep(&input, " ")) != NULL) { i++; }
     args[i] = NULL;
@@ -84,18 +83,24 @@ int execute()
         }
     }
 
+    // must be external program, need to fork
     pid = fork();
 
-    if (pid < 0) {
-        fprintf(stderr, "fork failed\n");
-        return -1;
-    } else if (pid == 0) {
-        if (execvp(cmd, args) < 0) {
-            perror("pzash");
-            exit(-1);
-        }
-    } else {
-        wait(NULL);
+    switch (pid) {
+        case 0:
+            // CHILD
+            if (execvp(cmd, args) < 0) { perror("pzash"); }
+            exit(-1);    // only runs if execvp fails anyway
+
+        case -1:
+            // ERROR
+            fprintf(stderr, "fork failed\n");
+            break;
+
+        default:
+            // PARENT
+            wait(NULL);
+            break;
     }
 
     return 0;

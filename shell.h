@@ -2,12 +2,21 @@
 #ifndef SHELL_H
 #define SHELL_H
 #include <stdlib.h>
+#include <time.h>
 
+// heap variables
+char *pwd;
+char *cmd;
+char **args;
+char *time_str;
+
+// stack variables
+int ret;
 pid_t pid;
-char *pwd;      // dynamically allocated
-char *cmd;      // dynamically allocated
-char **args;    // dynamically allocated
+time_t rawtime;
+struct tm *timeinfo;
 
+// shell.c functions
 void update_time();
 int update_pwd();
 char **tokenize(char *input);
