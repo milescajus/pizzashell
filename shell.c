@@ -46,9 +46,8 @@ int loop()
     return execute();
 }
 
-int update_env()
+int update_pwd()
 {
-    setenv("OLDPWD", getenv("PWD"), 1);
     getcwd(pwd, MAXPATHLEN);
     return setenv("PWD", pwd, 1);
 }
