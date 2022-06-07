@@ -2,18 +2,18 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-int update_env();
+int update_pwd();
 char **tokenize(char *input);
 int execute();
 int loop();
 
 // built-ins
-const int builtin_count = 2;
+const int builtin_count;
 
 int cd(char **args);
 int help(char **args);
 
-int (*builtins[]) (char **) = {&cd, &help};
-char *builtin_names[] = {"cd", "help"};
+int (*builtins[2]) (char **);
+char *builtin_names[2];
 
 #endif

@@ -5,6 +5,10 @@
 
 #include "shell.h"
 
+const int builtin_count = 2;
+int (*builtins[]) (char **) = {&cd, &help};
+char *builtin_names[2] = {"cd", "help"};
+
 int help(char **args)
 {
     printf("Welcome to PIZZAshell :D\n");

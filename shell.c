@@ -32,6 +32,7 @@ int main()
 
 int loop()
 {
+    update_pwd();
     printf("\n%s\n", getenv("PWD"));
     printf("🍕> ");
     in = fgets(cmd, SIZE, stdin);
