@@ -8,6 +8,7 @@
 #define SIZE 256
 
 pid_t pid;
+int quit;
 char *pwd;      // dynamically allocated
 char *cmd;      // dynamically allocated
 char **args;    // dynamically allocated
@@ -15,27 +16,28 @@ void *in;
 
 int main()
 {
+    quit = 0;
     cmd = (char *)calloc(sizeof(char), SIZE);
     pwd = (char *)calloc(sizeof(char), MAXPATHLEN);
     args = (char **)calloc(sizeof(char *), SIZE);
 
-    while (1) { loop(); }
+    while (quit == 0) { quit = loop(); }
 
     free(pwd);
     free(cmd);
     free(args);
-    return 0;
+
+    exit(0);
 }
 
 int loop()
 {
-    update_env();
     printf("\n%s\n", getenv("PWD"));
     printf("🍕> ");
     in = fgets(cmd, SIZE, stdin);
 
     if (in == NULL)
-        exit(0);
+        return 1;
 
     cmd[strlen(cmd) - 1] = '\0';
 
