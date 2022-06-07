@@ -12,43 +12,28 @@ void *in;
 
 int main()
 {
-    int res = loop();
+    while (1) { loop(); }
 
     free(cmd);
     free(args);
-    return res;
+    return 0;
 }
 
 int loop()
 {
-    while (1) {
-        printf("🍕> ");
-        cmd = (char *)calloc(sizeof(char), SIZE);
-        in = fgets(cmd, SIZE, stdin);
+    printf("\n%s\n", getenv("PWD"));
+    printf("🍕> ");
+    cmd = (char *)calloc(sizeof(char), SIZE);
+    in = fgets(cmd, SIZE, stdin);
 
-        if (in == NULL)
-            break;
+    if (in == NULL)
+        exit(0);
 
-        cmd[strlen(cmd) - 1] = '\0';
+    cmd[strlen(cmd) - 1] = '\0';
 
-        args = tokenize(cmd);
+    args = tokenize(cmd);
 
-        pid = fork();
-
-        if (pid < 0) {
-            fprintf(stderr, "fork failed\n");
-            break;
-        } else if (pid == 0) {
-            if (execute() < 0)
-                return -1;
-            break;
-        } else {
-            wait(NULL);
-        }
-
-    }
-
-    return 0;
+    return execute();
 }
 
 char **tokenize(char *input)
@@ -67,14 +52,28 @@ int execute()
         return 0;
 
     for (int i = 0; i < builtin_count; ++i) {
-        if (strcmp(cmd, builtin_names[i]) == 0)
-            return builtins[i](args);
+        if (strcmp(cmd, builtin_names[i]) == 0) {
+            if (builtins[i](args) < 0) {
+                perror(cmd);
+                return -1;
+            }
+
+            return 0;
+        }
     }
 
-    if (execvp(cmd, args) < 0) {
-        fprintf(stderr, "exec failed\n");
-        perror(cmd);
+    pid = fork();
+
+    if (pid < 0) {
+        fprintf(stderr, "fork failed\n");
         return -1;
+    } else if (pid == 0) {
+        if (execvp(cmd, args) < 0) {
+            perror("pzash");
+            return -1;
+        }
+    } else {
+        wait(NULL);
     }
 
     return 0;

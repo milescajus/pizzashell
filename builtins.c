@@ -1,13 +1,13 @@
 #include <stdio.h>
+#include <unistd.h>
 
 int help(char **args)
 {
-    printf("PIZZAshell :D");
+    printf("Welcome to PIZZAshell :D\n");
     return 0;
 }
 
 int cd(char **args)
 {
-    printf("PIZZAshell :D");
-    return 0;
+    return chdir(args[1]);
 }
