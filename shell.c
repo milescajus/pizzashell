@@ -80,6 +80,9 @@ char **tokenize(char *input)
         }
     }
 
+    // TODO: replace $XX with envars
+    // TODO: expand ~ to $HOME
+
     return args;
 }
 
