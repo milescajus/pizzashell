@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/param.h>
+#include <editline/readline.h>
 
 #include "shell.h"
 #define SIZE 256
@@ -33,9 +34,12 @@ int main()
 int loop()
 {
     update_pwd();
+    /*
     printf("\n%s\n", getenv("PWD"));
     printf("🍕> ");
     in = fgets(cmd, SIZE, stdin);
+    */
+    cmd = readline("🍕> ");
 
     if (in == NULL)
         return 1;

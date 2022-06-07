@@ -1,5 +1,6 @@
 // TODO Implement Start, end , insert pointer, read pointer
 
+/*
 int start, end, insert_offset, read_pointer;
 void init(){
   end = 0;
@@ -7,7 +8,7 @@ void init(){
   read_pointer = 0;
 }
 // end is the last element populated in the array
-void* insert(int* data_headpointer, char* command);{
+void* insert(int* data_headpointer, char* command) {
   data_headpointer[insert_offset++] = command;
   end = insert_offset;
   read_pointer = end + 1;
@@ -34,4 +35,4 @@ void* read_down(data_headpointer){
   }
 }
 
-  
+*/
