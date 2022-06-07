@@ -61,6 +61,7 @@ char **tokenize(char *input)
     int i = 0;
     while ((args[i] = strsep(&input, " ")) != NULL) { i++; }
     args[i] = NULL;
+    // TODO: handle dangling spaces
 
     return args;
 }
