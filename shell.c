@@ -12,7 +12,6 @@ int main()
 
     free(cmd);
     free(args);
-    printf("bye!\n");
     return res;
 }
 
@@ -36,7 +35,8 @@ int loop()
             fprintf(stderr, "fork failed\n");
             break;
         } else if (pid == 0) {
-            execute();
+            if (execute() < 0)
+                return -1;
             break;
         } else {
             wait(NULL);
@@ -57,10 +57,16 @@ char **tokenize(char * input)
     return args;
 }
 
-void execute()
+int execute()
 {
+    if (cmd[0] == '\0')
+        return 0;
+
     if (execvp(cmd, args) < 0) {
         fprintf(stderr, "exec failed\n");
         perror(cmd);
+        return -1;
     }
+
+    return 0;
 }

@@ -4,5 +4,5 @@
 #include <unistd.h>
 
 char **tokenize(char * input);
-void execute(char * cmd, char ** args);
+int execute();
 int loop();
