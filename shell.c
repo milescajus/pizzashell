@@ -7,7 +7,6 @@ char **tokenize(char * input)
     int i = 0;
     while ((args[i] = strsep(&input, " ")) != NULL) { i++; }
     args[i] = NULL;
-    args = realloc(args, sizeof(char *) * i);
 
     return args;
 }
