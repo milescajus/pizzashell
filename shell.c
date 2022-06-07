@@ -4,7 +4,15 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/param.h>
-#include <editline/readline.h>
+#ifdef __APPLE__
+    #include <editline/readline.h>
+#else
+    #include <readline/readline.h>
+    #include <readline/history.h>
+#endif
+#ifdef __FreeBSD__
+    #include <sys/wait.h>
+#endif
 
 #include "shell.h"
 #define SIZE 256
@@ -28,6 +36,7 @@ int main()
     free(args);
     free(time_str);
 
+    printf("\n");
     exit(0);
 }
 
