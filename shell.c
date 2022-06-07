@@ -8,16 +8,9 @@
 #include "shell.h"
 #define SIZE 256
 
-pid_t pid;
-int quit;
-char *pwd;      // dynamically allocated
-char *cmd;      // dynamically allocated
-char **args;    // dynamically allocated
-void *in;
-
 int main()
 {
-    quit = 0;
+    int quit = 0;
     cmd = (char *)calloc(sizeof(char), SIZE);
     pwd = (char *)calloc(sizeof(char), MAXPATHLEN);
     args = (char **)calloc(sizeof(char *), SIZE);
@@ -36,6 +29,9 @@ int loop()
     update_pwd();
     printf("\n%s\n", getenv("PWD"));
     cmd = readline("🍕> ");
+
+    if (cmd == NULL)
+        return 1;
 
     if (strlen(cmd) > 0)
         add_history(cmd);
