@@ -20,11 +20,10 @@ struct tm *timeinfo;
 // shell.c functions
 void update_time();
 int update_pwd();
-char **tokenize(char *input);
-char **pretokenize(char *input);
+char **tokenize(char *input, char *delim);
 int execute();
 int loop();
-int check_pipe(char *input);
+
 // built-ins
 const int builtin_count;
 

@@ -57,19 +57,19 @@ int loop()
     // only add actual commands to hist
     if (strlen(cmd) > 0) {
         add_history(cmd);
-        args = tokenize(cmd);
+        args = tokenize(cmd, " ");
         return execute();
     }
 
     return 0;
 }
 
-char **tokenize(char *input)
+char **tokenize(char *input, char *delim)
 {
     // splits a char array by spaces and adds terminating null
 
     int len = 0;
-    while ((args[len] = strsep(&input, " ")) != NULL) { len++; }
+    while ((args[len] = strsep(&input, delim)) != NULL) { len++; }
 
     // rudimentary way to terminate at 2 or more spaces
     for (int i = 0; i < SIZE; ++i) {
