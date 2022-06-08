@@ -1,19 +1,3 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/param.h>
-#ifdef __APPLE__
-    #include <editline/readline.h>
-#else
-    #include <readline/readline.h>
-    #include <readline/history.h>
-#endif
-#ifdef __FreeBSD__
-    #include <sys/wait.h>
-#endif
-
 #include "shell.h"
 #define SIZE 256
 
@@ -22,17 +6,19 @@ int main()
     // initialize variables and alloc mem
     ret = 0;
     time_str = (char *)calloc(sizeof(char), 8);
-    cmd = (char *)calloc(sizeof(char), SIZE);
+    line = (char *)calloc(sizeof(char), SIZE);
     pwd = (char *)calloc(sizeof(char), MAXPATHLEN);
+    cmds = (char **)calloc(sizeof(char *), SIZE);
     args = (char **)calloc(sizeof(char *), SIZE);
 
     pwd = getwd(NULL);
 
-    while (ret < 1) { ret = loop(); }
+    while (ret < 1) { ret = prompt(); }
 
     // free memory for graceful exit
     free(pwd);
-    free(cmd);
+    free(line);
+    free(cmds);
     free(args);
     free(time_str);
 
@@ -40,7 +26,7 @@ int main()
     exit(0);
 }
 
-int loop()
+int prompt()
 {
     // main prompt loop
 
@@ -48,119 +34,118 @@ int loop()
 
     // print prompt
     printf("\n\033[31;1m%s\033[0m [%s]\n", pwd, time_str);
-    cmd = readline("🍕\033[38;5;220m$\033[0m ");
+    line = readline("🍕\033[38;5;220m$\033[0m ");
 
     // handle Ctrl-D
-    if (cmd == NULL)
+    if (line == NULL)
         return 1;
 
-    // only add actual commands to hist
-    if (strlen(cmd) > 0) {
-        add_history(cmd);
-        args = tokenize(cmd, "|");
-        // handle piping
-        //printf("before pipe %s", args[1]);
-        if( args[1] != NULL )
-        {
-          pipe_execute();
-        }
-        // endpiping
-        args = tokenize(cmd, " ");
-        return execute();
+    // only execute actual commands
+    if (strlen(line) == 0)
+        return 0;
+
+    // add line to readline history
+    add_history(line);
+
+    int cmd_count = tokenize(cmds, line, "|");
+
+    for (int i = 0; i < cmd_count; ++i) {
+        if (cmds[i][0] == ' ')  // command after | pipe has leading space
+            cmds[i]++;
+
+        int arg_count = tokenize(args, cmds[i], " ");
+
+        execute(args, arg_count);
     }
 
     return 0;
 }
 
-char **tokenize(char *input, char *delim)
+int tokenize(char **dest, char *source, char *delim)
 {
     // splits a char array by spaces and adds terminating null
 
     int len = 0;
-    while ((args[len] = strsep(&input, delim)) != NULL) { len++; }
+    while ((dest[len] = strsep(&source, delim)) != NULL) { len++; }
 
     // rudimentary way to terminate at 2 or more spaces
-    for (int i = 0; i < SIZE; ++i) {
-        if (args[i] == NULL)
-            break;
-        if (strcmp(args[i], "") == 0) {
-            args[i] = NULL;
+    for (int i = 0; i < len; ++i) {
+        if (strcmp(dest[i], "") == 0) {
+            dest[i] = NULL;
             break;
         }
     }
 
-    // TODO: replace $XX with envars
-    // TODO: expand ~ to $HOME
-
-    return args;
+    return len;
 }
+
 int pipe_execute()
 {
-  // execute i to i+1 then pass back output as input for i+2 etc...
-  int fd[2];
-  if (pipe(fd) == -1)
-  {
-    perror("pipe");
-    exit(EXIT_FAILURE);
-  }
-  for (int i = 1; i <= SIZE; i++)
-  {
-    if(!fork())
+    /*
+    // execute i to i+1 then pass back output as input for i+2 etc...
+    int fd[2];
+    if (pipe(fd) == -1)
     {
-      //process input to pipe
-      write(STDIN_FILENO, args[i], SIZE);
-      dup2(fd[WRITE_END], STDOUT_FILENO);
-      close(fd[WRITE_END]);
-      loop();
+        perror("pipe");
+        exit(EXIT_FAILURE);
     }
-
-    else
+    for (int i = 1; i <= SIZE; i++)
     {
-      dup2(fd[READ_END], STDIN_FILENO);
-      close(fd[READ_END]);
-      wait(NULL);
-      loop();
+        if(!fork())
+        {
+            //process input to pipe
+            write(STDIN_FILENO, args[i], SIZE);
+            dup2(fd[WRITE_END], STDOUT_FILENO);
+            close(fd[WRITE_END]);
+            loop();
+        }
+
+        else
+        {
+            dup2(fd[READ_END], STDIN_FILENO);
+            close(fd[READ_END]);
+            wait(NULL);
+            loop();
+        }
     }
-  }
+    */
+        return 0;
 
-
+    /*
 
     // first iterations makes the ouput into the input for next
 
 
-      int fd[2];
-      write(STDIN_FILENO, STDOUT_FILENO);
-      if(!fork())
-      {
-        //process input to pipe
-        dup2(fd[WRITE_END], STDOUT_FILENO);
-        close(fd[WRITE_END]);
-        loop();
-        ;
-      }
-
-      else
-      {
-        wait(NULL);
-        dup2(fd[READ_END], STDIN_FILENO);
-        close(fd[READ_END]);
-        loop();
-      }
+    int fd[2];
+    write(STDIN_FILENO, STDOUT_FILENO);
+    if(!fork())
+    {
+    //process input to pipe
+    dup2(fd[WRITE_END], STDOUT_FILENO);
+    close(fd[WRITE_END]);
+    loop();
+    ;
     }
-  }
-}
 
-int execute()
+    else
+    {
+    wait(NULL);
+    dup2(fd[READ_END], STDIN_FILENO);
+    close(fd[READ_END]);
+    loop();
+    }
+    }
+    }
+    */
+        }
+
+int execute(char **args, int arg_count)
 {
-    // if user enters nothing
-    if (cmd[0] == '\0')
-        return 0;
-
     // check for built-in
     for (int i = 0; i < builtin_count; ++i) {
-        if (strcmp(cmd, builtin_names[i]) == 0) {
+        if (strcmp(args[0], builtin_names[i]) == 0) {
             if (builtins[i](args) < 0) {
-                perror(cmd);
+                perror(args[0]);
                 return -1;
             }
 
@@ -174,7 +159,7 @@ int execute()
     switch (pid) {
         case 0:
             // CHILD
-            if (execvp(cmd, args) < 0) { perror("pzash"); }
+            if (execvp(args[0], args) < 0) { perror("pzash"); }
             exit(-1);    // only runs if execvp fails anyway
 
         case -1:

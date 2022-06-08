@@ -1,10 +1,3 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/stat.h>
-
 #include "shell.h"
 
 // LIST OF BUILT-INS
@@ -19,7 +12,6 @@ int topic_count = 5;
 // ACTUAL BUILT-IN FUNCTIONS
 int help(char **args)
 {
-    printf("cmd: %s\n", cmd);
     char *topic_str = args[1];
     int topic = -1;
 
