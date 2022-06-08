@@ -6,9 +6,9 @@
 #include "shell.h"
 
 // LIST OF BUILT-INS
-const int builtin_count = 2;
-int (*builtins[]) (char **) = {&cd, &help};
-char *builtin_names[2] = {"cd", "help"};
+const int builtin_count = 3;
+int (*builtins[]) (char **) = {&cd, &help, &info};
+char *builtin_names[] = {"cd", "help", "info"};
 
 // ACTUAL BUILT-IN FUNCTIONS
 int help()
@@ -31,6 +31,11 @@ int cd()
         return -1;
 
     return update_pwd();
+}
+
+int info()
+{
+    return 0;
 }
 
 // HELPER FUNCTIONS

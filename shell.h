@@ -30,8 +30,9 @@ const int builtin_count;
 
 int cd();
 int help();
+int info();
 
-int (*builtins[2]) (char **);
-char *builtin_names[2];
+int (*builtins[3]) (char **);
+char *builtin_names[3];
 
 #endif
