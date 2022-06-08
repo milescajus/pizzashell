@@ -1,12 +1,12 @@
 #include "shell.h"
 
 // LIST OF BUILT-INS
-int (*builtins[]) (char **) = {&cd, &help, &info, &math, &echo};
-char *builtin_names[] = {"cd", "help", "info", "math", "echo"};
+int (*builtins[]) (char **) = {&cd, &help, &info, &math, &echo, &canal};
+char *builtin_names[] = {"cd", "help", "info", "math", "echo", "canal"};
 
 // HELP TOPICS
-enum topics {HELP, TOPICS, BUILTINS, ECHO, PIZZA};
-char *help_topics[] = {"help", "topics", "builtins", "echo", "pizza"};
+enum topics {HELP, TOPICS, BUILTINS, ECHO, PIZZA, CANAL};
+char *help_topics[] = {"help", "topics", "builtins", "echo", "pizza", "canal"};
 int topic_count = 5;
 
 // ACTUAL BUILT-IN FUNCTIONS
@@ -143,6 +143,17 @@ int echo(char **args)
 
     char *fmt = newline ? "%s\n" : "%s";
     printf(fmt, str);
+    return 0;
+}
+
+int canal()
+{
+    if (!fork()) {
+        execlp("python", "python", "./Main.py", NULL);
+    } else {
+        wait(NULL);
+    }
+
     return 0;
 }
 

@@ -22,7 +22,7 @@
     #include <sys/wait.h>
 #endif
 
-#define builtin_count 5
+#define builtin_count 6
 
 // heap variables
 char *pwd;      // current directory
@@ -52,6 +52,7 @@ int help(char **args);
 int info(char **args);
 int math(char **args);
 int echo(char **args);
+int canal();
 
 int (*builtins[builtin_count]) (char **);
 char *builtin_names[builtin_count];
