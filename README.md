@@ -20,5 +20,7 @@ Hopefully TODO
 
 Multiplexing
 Color coding
+Regex
 
+Functionality to automatically order pizza
 Autocompletion
