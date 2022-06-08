@@ -3,7 +3,10 @@
 #define SHELL_H
 #include <stdlib.h>
 #include <time.h>
+#include <limits.h>
 #define builtin_count 5
+#define READ_END 0
+#define WRITE_END 1
 
 // heap variables
 char *pwd;
@@ -22,6 +25,7 @@ struct tm *timeinfo;
 void update_time();
 int update_pwd();
 char **tokenize(char *input, char *delim);
+int pipe_execute();
 int execute();
 int loop();
 

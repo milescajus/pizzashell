@@ -57,6 +57,14 @@ int loop()
     // only add actual commands to hist
     if (strlen(cmd) > 0) {
         add_history(cmd);
+        args = tokenize(cmd, "|");
+        // handle piping
+        //printf("before pipe %s", args[1]);
+        if( args[1] != NULL )
+        {
+          pipe_execute();
+        }
+        // endpiping
         args = tokenize(cmd, " ");
         return execute();
     }
@@ -85,6 +93,58 @@ char **tokenize(char *input, char *delim)
     // TODO: expand ~ to $HOME
 
     return args;
+}
+int pipe_execute()
+{
+  // execute i to i+1 then pass back output as input for i+2 etc...
+  int fd[2];
+  if (pipe(fd) == -1)
+  {
+    perror("pipe");
+    exit(EXIT_FAILURE);
+  }
+
+  if(!fork())
+  {
+    //process input to pipe
+    write(STDIN_FILENO, args[1], SIZE);
+    dup2(fd[WRITE_END], STDOUT_FILENO);
+    close(fd[WRITE_END]);
+    loop();
+  }
+
+  else
+  {
+    wait(NULL);
+    dup2(fd[READ_END], STDIN_FILENO);
+    close(fd[READ_END]);
+    wait(NULL);
+    loop();
+
+    // first iterations makes the ouput into the input for next
+    for (int i = 2; i <= SIZE; i++)
+    {
+
+      int fd[2];
+      write(STDIN_FILENO, STDOUT_FILENO);
+      if(!fork())
+      {
+        //process input to pipe
+        dup2(fd[WRITE_END], STDOUT_FILENO);
+        close(fd[WRITE_END]);
+        loop();
+        ;
+      }
+
+      else
+      {
+        wait(NULL);
+        dup2(fd[READ_END], STDIN_FILENO);
+        close(fd[READ_END]);
+        loop();
+      }
+    }
+  }
 }
 
 int execute()
