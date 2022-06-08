@@ -138,20 +138,13 @@ int math(char **args)
 
 int echo(char **args)
 {
+    char *str = args[1] == NULL ? "" : args[1];
+    int newline = 1;
 
-    char *str;
-    int newline;
-
-    if (strcmp(args[1], "-n") == 0) {
-        str = args[2];
+    if (strcmp(str, "-n") == 0) {
+        str = args[2] == NULL ? "" : args[2];
         newline = 0;
-    } else {
-        str = args[1];
-        newline = 1;
     }
-
-    if (str == NULL)
-        str = "";
 
     if (str[0] == '$')
         str = getenv(++str);
