@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -54,7 +55,30 @@ int info(char **args)
 
 int math(char **args)
 {
-    char *expr = args[1];
+    int t1 = (int)strtol(args[1], NULL, 0);
+    char op = args[2][0];
+    int t2 = (int)strtol(args[3], NULL, 0);
+
+    float res;
+    switch (op) {
+        case '+':
+            res = t1 + t2;
+            break;
+        case '-':
+            res = t1 - t2;
+            break;
+        case '*':
+            res = t1 * t2;
+            break;
+        case '/':
+            res = (float)t1 / (float)t2;
+            break;
+    }
+
+    if (fmod(res, 1.f) == 0)
+        printf("%d\n", (int)res);
+    else
+        printf("%.4f\n", res);
 
     return 0;
 }
