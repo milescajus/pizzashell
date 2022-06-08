@@ -3,7 +3,7 @@
 #define SHELL_H
 #include <stdlib.h>
 #include <time.h>
-#define builtin_count 4
+#define builtin_count 5
 
 // heap variables
 char *pwd;
@@ -30,6 +30,7 @@ int cd(char **args);
 int help(char **args);
 int info(char **args);
 int math(char **args);
+int echo(char **args);
 
 int (*builtins[builtin_count]) (char **);
 char *builtin_names[builtin_count];

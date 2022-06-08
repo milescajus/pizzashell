@@ -8,17 +8,48 @@
 #include "shell.h"
 
 // LIST OF BUILT-INS
-int (*builtins[]) (char **) = {&cd, &help, &info, &math};
-char *builtin_names[] = {"cd", "help", "info", "math"};
+int (*builtins[]) (char **) = {&cd, &help, &info, &math, &echo};
+char *builtin_names[] = {"cd", "help", "info", "math", "echo"};
+
+// HELP TOPICS
+enum topics {HELP, BUILTINS, PIZZA};
+char *help_topics[] = {"help", "builtins", "pizza"};
+int topic_count = 3;
 
 // ACTUAL BUILT-IN FUNCTIONS
 int help(char **args)
 {
-    char *topic = args[1];
+    char *topic_str = args[1];
+    int topic = 0;
 
-    printf("Welcome to PIZZAshell :D\n");
-    if (topic != NULL) {
-        printf("Selected topic: %s\n", topic);
+    if (topic_str == NULL) {
+        printf("Welcome to PIZZAshell :D\nTry using help with a tasty argument...\n");
+        return 0;
+    }
+
+    for (int i = 0; i < topic_count; ++i) {
+        if (strcmp(topic_str, help_topics[i]) == 0) {
+            topic = i;
+            break;
+        }
+    }
+
+    switch (topic) {
+        case HELP:
+            printf("Usage: help [topic]\nTopics: ");
+            for (int i = 0; i < topic_count; ++i)
+                printf("%s ", help_topics[i]);
+            printf("\n");
+            break;
+        case BUILTINS:
+            printf("Available built-in functions:\ncd, help, info, math, echo\n");
+            break;
+        case PIZZA:
+            printf("It is delicious. Need I say more?\n");
+            break;
+        default:
+            printf("undefined topic\n");
+            break;
     }
 
     return 0;
@@ -27,6 +58,11 @@ int help(char **args)
 int cd(char **args)
 {
     char *dest = args[1];
+
+    if (dest == NULL) {
+        printf("Usage: cd \033[4mdirectory\033[0m");
+        return -1;
+    }
 
     // change to previous dir
     if (strcmp(dest, "-") == 0)
@@ -47,6 +83,11 @@ int info(char **args)
 {
     char *fname = args[1];
 
+    if (fname == NULL) {
+        printf("Usage: info filename");
+        return -1;
+    }
+
     struct stat info;
     stat(fname, &info);
     printf("%lu, %u, %u\n", info.st_size, info.st_uid, info.st_mode);
@@ -55,6 +96,11 @@ int info(char **args)
 
 int math(char **args)
 {
+    if (args[1] == NULL || args[2] == NULL || args[3] == NULL) {
+        printf("Usage: math OPERAND OPERATOR OPERAND");
+        return -1;
+    }
+
     int t1 = (int)strtol(args[1], NULL, 0);
     char op = args[2][0];
     int t2 = (int)strtol(args[3], NULL, 0);
@@ -80,6 +126,32 @@ int math(char **args)
     else
         printf("%.4f\n", res);
 
+    return 0;
+}
+
+int echo(char **args)
+{
+    if (args[1] == NULL) {
+        printf("Usage: echo [-n] STRING");
+        return -1;
+    }
+
+    char *str;
+    int newline;
+
+    if (strcmp(args[1], "-n") == 0) {
+        str = args[2];
+        newline = 0;
+    } else {
+        str = args[1];
+        newline = 1;
+    }
+
+    if (str[0] == '$')
+        str = getenv(++str);
+
+    char *fmt = newline ? "%s\n" : "%s";
+    printf(fmt, str);
     return 0;
 }
 
