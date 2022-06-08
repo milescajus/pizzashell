@@ -103,27 +103,30 @@ int pipe_execute()
     perror("pipe");
     exit(EXIT_FAILURE);
   }
-
-  if(!fork())
+  for (int i = 1; i <= SIZE; i++)
   {
-    //process input to pipe
-    write(STDIN_FILENO, args[1], SIZE);
-    dup2(fd[WRITE_END], STDOUT_FILENO);
-    close(fd[WRITE_END]);
-    loop();
+    if(!fork())
+    {
+      //process input to pipe
+      write(STDIN_FILENO, args[i], SIZE);
+      dup2(fd[WRITE_END], STDOUT_FILENO);
+      close(fd[WRITE_END]);
+      loop();
+    }
+
+    else
+    {
+      dup2(fd[READ_END], STDIN_FILENO);
+      close(fd[READ_END]);
+      wait(NULL);
+      loop();
+    }
   }
 
-  else
-  {
-    wait(NULL);
-    dup2(fd[READ_END], STDIN_FILENO);
-    close(fd[READ_END]);
-    wait(NULL);
-    loop();
+
 
     // first iterations makes the ouput into the input for next
-    for (int i = 2; i <= SIZE; i++)
-    {
+
 
       int fd[2];
       write(STDIN_FILENO, STDOUT_FILENO);
