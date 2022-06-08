@@ -12,15 +12,16 @@ int (*builtins[]) (char **) = {&cd, &help, &info, &math, &echo};
 char *builtin_names[] = {"cd", "help", "info", "math", "echo"};
 
 // HELP TOPICS
-enum topics {HELP, BUILTINS, PIZZA};
-char *help_topics[] = {"help", "builtins", "pizza"};
-int topic_count = 3;
+enum topics {HELP, TOPICS, BUILTINS, ECHO, PIZZA};
+char *help_topics[] = {"help", "topics", "builtins", "echo", "pizza"};
+int topic_count = 5;
 
 // ACTUAL BUILT-IN FUNCTIONS
 int help(char **args)
 {
+    printf("cmd: %s\n", cmd);
     char *topic_str = args[1];
-    int topic = 0;
+    int topic = -1;
 
     if (topic_str == NULL) {
         printf("Welcome to PIZZAshell :D\nTry using help with a tasty argument...\n");
@@ -36,13 +37,19 @@ int help(char **args)
 
     switch (topic) {
         case HELP:
-            printf("Usage: help [topic]\nTopics: ");
+            printf("Usage: help [topic]\n");
+            break;
+        case TOPICS:
+            printf("Help topics: ");
             for (int i = 0; i < topic_count; ++i)
                 printf("%s ", help_topics[i]);
             printf("\n");
             break;
         case BUILTINS:
             printf("Available built-in functions:\ncd, help, info, math, echo\n");
+            break;
+        case ECHO:
+            printf("Usage: echo [-n] [\033[4mstring\033[0m]\n");
             break;
         case PIZZA:
             printf("It is delicious. Need I say more?\n");
@@ -60,7 +67,7 @@ int cd(char **args)
     char *dest = args[1];
 
     if (dest == NULL) {
-        printf("Usage: cd \033[4mdirectory\033[0m");
+        printf("Usage: cd \033[4mdirectory\033[0m\n");
         return -1;
     }
 
@@ -84,7 +91,7 @@ int info(char **args)
     char *fname = args[1];
 
     if (fname == NULL) {
-        printf("Usage: info filename");
+        printf("Usage: info \033[4mfilename\033[0m\n");
         return -1;
     }
 
@@ -97,7 +104,7 @@ int info(char **args)
 int math(char **args)
 {
     if (args[1] == NULL || args[2] == NULL || args[3] == NULL) {
-        printf("Usage: math OPERAND OPERATOR OPERAND");
+        printf("Usage: math \033[4mterm1\033[0m \033[4moperator\033[0m \033[4mterm2\033[0m\n");
         return -1;
     }
 
@@ -131,10 +138,6 @@ int math(char **args)
 
 int echo(char **args)
 {
-    if (args[1] == NULL) {
-        printf("Usage: echo [-n] STRING");
-        return -1;
-    }
 
     char *str;
     int newline;
@@ -146,6 +149,9 @@ int echo(char **args)
         str = args[1];
         newline = 1;
     }
+
+    if (str == NULL)
+        str = "";
 
     if (str[0] == '$')
         str = getenv(++str);
