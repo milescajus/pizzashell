@@ -5,10 +5,12 @@
 
 #include "shell.h"
 
+// LIST OF BUILT-INS
 const int builtin_count = 2;
 int (*builtins[]) (char **) = {&cd, &help};
 char *builtin_names[2] = {"cd", "help"};
 
+// ACTUAL BUILT-IN FUNCTIONS
 int help()
 {
     printf("Welcome to PIZZAshell :D\n");
@@ -17,11 +19,40 @@ int help()
 
 int cd()
 {
-    if (strcmp(args[1], "-") == 0) {
+    // change to previous dir
+    if (strcmp(args[1], "-") == 0)
         args[1] = getenv("OLDPWD");
-    }
 
-    setenv("OLDPWD", pwd, 1);
+    // change to home dir, TODO: tilde-expansion
+    if (strcmp(args[1], "~") == 0)
+        args[1] = getenv("HOME");
 
-    return chdir(args[1]);
+    if (chdir(args[1]) < 0)
+        return -1;
+
+    return update_pwd();
+}
+
+// HELPER FUNCTIONS
+int update_pwd()
+{
+    // set OLDPWD to previous dir
+    if (setenv("OLDPWD", pwd, 1) < 0)
+        return -1;
+
+    // get current dir
+    pwd = getwd(NULL);
+
+    // update PWD to current dir
+    if (setenv("PWD", pwd, 1) < 0)
+        return -1;
+
+    return 0;
+}
+
+void update_time()
+{
+    rawtime = time(NULL);
+    timeinfo = localtime(&rawtime);
+    strftime(time_str, 8, "%H:%M:%S", timeinfo);
 }

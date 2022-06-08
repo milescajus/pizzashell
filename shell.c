@@ -2,37 +2,59 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 #include <sys/param.h>
-#include <editline/readline.h>
+#ifdef __APPLE__
+    #include <editline/readline.h>
+#else
+    #include <readline/readline.h>
+    #include <readline/history.h>
+#endif
+#ifdef __FreeBSD__
+    #include <sys/wait.h>
+#endif
 
 #include "shell.h"
 #define SIZE 256
 
 int main()
 {
-    int quit = 0;
+    // initialize variables and alloc mem
+    ret = 0;
+    time_str = (char *)calloc(sizeof(char), 8);
     cmd = (char *)calloc(sizeof(char), SIZE);
     pwd = (char *)calloc(sizeof(char), MAXPATHLEN);
     args = (char **)calloc(sizeof(char *), SIZE);
 
-    while (quit == 0) { quit = loop(); }
+    pwd = getwd(NULL);
 
+    while (ret < 1) { ret = loop(); }
+
+    // free memory for graceful exit
     free(pwd);
     free(cmd);
     free(args);
+    free(time_str);
 
+    printf("\n");
     exit(0);
 }
 
 int loop()
 {
-    update_pwd();
-    printf("\n%s\n", getenv("PWD"));
-    cmd = readline("🍕> ");
+    // main prompt loop
 
+    update_time();
+
+    // print prompt
+    printf("\n\033[31;1m%s\033[0m [%s]\n", pwd, time_str);
+    cmd = readline("🍕\033[38;5;220m$\033[0m ");
+
+    // handle Ctrl-D
     if (cmd == NULL)
         return 1;
 
+    // only add actual commands to hist
     if (strlen(cmd) > 0)
         add_history(cmd);
 
@@ -41,17 +63,25 @@ int loop()
     return execute();
 }
 
-int update_pwd()
-{
-    getcwd(pwd, MAXPATHLEN);
-    return setenv("PWD", pwd, 1);
-}
-
 char **tokenize(char *input)
 {
-    int i = 0;
-    while ((args[i] = strsep(&input, " ")) != NULL) { i++; }
-    args[i] = NULL;
+    // splits a char array by spaces and adds terminating null
+
+    int len = 0;
+    while ((args[len] = strsep(&input, " ")) != NULL) { len++; }
+
+    // rudimentary way to terminate at 2 or more spaces
+    for (int i = 0; i < SIZE; ++i) {
+        if (args[i] == NULL)
+            break;
+        if (strcmp(args[i], "") == 0) {
+            args[i] = NULL;
+            break;
+        }
+    }
+
+    // TODO: replace $XX with envars
+    // TODO: expand ~ to $HOME
 
     return args;
 }
@@ -74,18 +104,24 @@ int execute()
         }
     }
 
+    // must be external program, need to fork
     pid = fork();
 
-    if (pid < 0) {
-        fprintf(stderr, "fork failed\n");
-        return -1;
-    } else if (pid == 0) {
-        if (execvp(cmd, args) < 0) {
-            perror("pzash");
-            exit(-1);
-        }
-    } else {
-        wait(NULL);
+    switch (pid) {
+        case 0:
+            // CHILD
+            if (execvp(cmd, args) < 0) { perror("pzash"); }
+            exit(-1);    // only runs if execvp fails anyway
+
+        case -1:
+            // ERROR
+            fprintf(stderr, "fork failed\n");
+            break;
+
+        default:
+            // PARENT
+            wait(NULL);
+            break;
     }
 
     return 0;
