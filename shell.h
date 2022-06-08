@@ -23,11 +23,9 @@
 #endif
 
 #define builtin_count 5
-#define READ_END 0
-#define WRITE_END 1
 
 // heap variables
-char *pwd;
+char *pwd;      // current directory
 char *line;     // user input
 char **cmds;    // array of commands
 char **args;    // array of args per command
@@ -35,6 +33,8 @@ char *time_str;
 
 // stack variables
 int ret;
+int fd1[2];
+int fd2[2];
 pid_t pid;
 time_t rawtime;
 struct tm *timeinfo;
@@ -44,8 +44,7 @@ void update_time();
 int update_pwd();
 int prompt();
 int tokenize(char **dest, char *source, char *delim);
-int execute(char **args, int arg_count);
-int pipe_execute();
+int execute(char **args, int arg_count, int first_cmd, int last_cmd);
 
 // built-ins
 int cd(char **args);

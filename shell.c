@@ -48,6 +48,8 @@ int prompt()
     add_history(line);
 
     int cmd_count = tokenize(cmds, line, "|");
+    int first_cmd;
+    int last_cmd;
 
     for (int i = 0; i < cmd_count; ++i) {
         if (cmds[i][0] == ' ')  // command after | pipe has leading space
@@ -55,7 +57,9 @@ int prompt()
 
         int arg_count = tokenize(args, cmds[i], " ");
 
-        execute(args, arg_count);
+        first_cmd = (i == 0);
+        last_cmd = (i == cmd_count - 1);
+        execute(args, arg_count, first_cmd, last_cmd);
     }
 
     return 0;
@@ -79,67 +83,7 @@ int tokenize(char **dest, char *source, char *delim)
     return len;
 }
 
-int pipe_execute()
-{
-    /*
-    // execute i to i+1 then pass back output as input for i+2 etc...
-    int fd[2];
-    if (pipe(fd) == -1)
-    {
-        perror("pipe");
-        exit(EXIT_FAILURE);
-    }
-    for (int i = 1; i <= SIZE; i++)
-    {
-        if(!fork())
-        {
-            //process input to pipe
-            write(STDIN_FILENO, args[i], SIZE);
-            dup2(fd[WRITE_END], STDOUT_FILENO);
-            close(fd[WRITE_END]);
-            loop();
-        }
-
-        else
-        {
-            dup2(fd[READ_END], STDIN_FILENO);
-            close(fd[READ_END]);
-            wait(NULL);
-            loop();
-        }
-    }
-    */
-        return 0;
-
-    /*
-
-    // first iterations makes the ouput into the input for next
-
-
-    int fd[2];
-    write(STDIN_FILENO, STDOUT_FILENO);
-    if(!fork())
-    {
-    //process input to pipe
-    dup2(fd[WRITE_END], STDOUT_FILENO);
-    close(fd[WRITE_END]);
-    loop();
-    ;
-    }
-
-    else
-    {
-    wait(NULL);
-    dup2(fd[READ_END], STDIN_FILENO);
-    close(fd[READ_END]);
-    loop();
-    }
-    }
-    }
-    */
-        }
-
-int execute(char **args, int arg_count)
+int execute(char **args, int arg_count, int first_cmd, int last_cmd)
 {
     // check for built-in
     for (int i = 0; i < builtin_count; ++i) {
@@ -153,22 +97,52 @@ int execute(char **args, int arg_count)
         }
     }
 
+    // pipe handling, TODO: handle builtins
+    if (!last_cmd) {
+        if (pipe(fd2) < 0) {
+            perror("PIPE ERROR");
+            return -1;
+        }
+    }
+
     // must be external program, need to fork
     pid = fork();
 
     switch (pid) {
-        case 0:
-            // CHILD
-            if (execvp(args[0], args) < 0) { perror("pzash"); }
-            exit(-1);    // only runs if execvp fails anyway
-
         case -1:
             // ERROR
             fprintf(stderr, "fork failed\n");
             break;
 
+        case 0:
+            // CHILD
+            if (!first_cmd) {
+                dup2(fd1[0], 0);
+                close(fd1[0]);
+                close(fd1[1]);
+            }
+
+            if (!last_cmd) {
+                close(fd2[0]);
+                dup2(fd2[1], 1);
+                close(fd2[1]);
+            }
+
+            if (execvp(args[0], args) < 0) { perror("pzash"); }
+            exit(-1);    // only runs if execvp fails anyway
+
         default:
             // PARENT
+            if (!first_cmd) {
+                close(fd1[0]);
+                close(fd1[1]);
+            }
+
+            if (!last_cmd) {
+                fd1[0] = fd2[0];
+                fd1[1] = fd2[1];
+            }
+
             wait(NULL);
             break;
     }
