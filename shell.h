@@ -26,10 +26,10 @@ int execute();
 int loop();
 
 // built-ins
-int cd();
-int help();
-int info();
-int math();
+int cd(char **args);
+int help(char **args);
+int info(char **args);
+int math(char **args);
 
 int (*builtins[builtin_count]) (char **);
 char *builtin_names[builtin_count];

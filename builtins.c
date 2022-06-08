@@ -11,38 +11,51 @@ int (*builtins[]) (char **) = {&cd, &help, &info, &math};
 char *builtin_names[] = {"cd", "help", "info", "math"};
 
 // ACTUAL BUILT-IN FUNCTIONS
-int help()
+int help(char **args)
 {
+    char *topic = args[1];
+
     printf("Welcome to PIZZAshell :D\n");
+    if (topic != NULL) {
+        printf("Selected topic: %s\n", topic);
+    }
+
     return 0;
 }
 
-int cd()
+int cd(char **args)
 {
+    char *dest = args[1];
+
     // change to previous dir
-    if (strcmp(args[1], "-") == 0)
-        args[1] = getenv("OLDPWD");
+    if (strcmp(dest, "-") == 0)
+        dest = getenv("OLDPWD");
 
-    // change to home dir, TODO: tilde-expansion
-    if (strcmp(args[1], "~") == 0)
-        args[1] = getenv("HOME");
+    if (dest[0] == '~') {
+        strcpy(dest, getenv("HOME"));
+        strcat(dest, ++args[1]);
+    }
 
-    if (chdir(args[1]) < 0)
+    if (chdir(dest) < 0)
         return -1;
 
     return update_pwd();
 }
 
-int info()
+int info(char **args)
 {
+    char *fname = args[1];
+
     struct stat info;
-    stat(args[1], &info);
+    stat(fname, &info);
     printf("%lu, %u, %u\n", info.st_size, info.st_uid, info.st_mode);
     return 0;
 }
 
-int math()
+int math(char **args)
 {
+    char *expr = args[1];
+
     return 0;
 }
 
