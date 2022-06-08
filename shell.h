@@ -25,13 +25,14 @@ int execute();
 int loop();
 
 // built-ins
-const int builtin_count;
+const int builtin_count = 4;
 
 int cd();
 int help();
 int info();
+int math();
 
-int (*builtins[3]) (char **);
-char *builtin_names[3];
+int (*builtins[builtin_count]) (char **);
+char *builtin_names[builtin_count];
 
 #endif

@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "shell.h"
 
 // LIST OF BUILT-INS
-const int builtin_count = 3;
-int (*builtins[]) (char **) = {&cd, &help, &info};
-char *builtin_names[] = {"cd", "help", "info"};
+int (*builtins[]) (char **) = {&cd, &help, &info, &math};
+char *builtin_names[] = {"cd", "help", "info", "math"};
 
 // ACTUAL BUILT-IN FUNCTIONS
 int help()
@@ -34,6 +34,14 @@ int cd()
 }
 
 int info()
+{
+    struct stat info;
+    stat(args[1], &info);
+    printf("%lu, %u, %u\n", info.st_size, info.st_uid, info.st_mode);
+    return 0;
+}
+
+int math()
 {
     return 0;
 }
