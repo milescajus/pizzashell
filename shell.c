@@ -55,12 +55,13 @@ int loop()
         return 1;
 
     // only add actual commands to hist
-    if (strlen(cmd) > 0)
+    if (strlen(cmd) > 0) {
         add_history(cmd);
+        args = tokenize(cmd);
+        return execute();
+    }
 
-    args = tokenize(cmd);
-
-    return execute();
+    return 0;
 }
 
 char **tokenize(char *input)
