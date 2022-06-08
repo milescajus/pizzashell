@@ -11,7 +11,7 @@ if( n == 1):
 
     Loc_Arr = Readfile.get_LOC_In_All_Subirectories(Readfile.Getsubfolders())
     for i in Loc_Arr:
-        print ("The current array is:",i[0]," Lines of Code:",i[1],"\n")
+        print ("The current file is:",i[0]," Lines of Code:",i[1],"\n")
     #
     # print (Loc_Arr.shape)
     # print (Loc_Arr.size)
@@ -21,7 +21,11 @@ if( n == 1):
 else:
     #if str(sys.argv).includes("l"):
     for i in range(1, n):
-        if (sys.argv[i] == "l"):
+        if (sys.argv[i] == "h"):
             Loc_Arr = hal.get_n1_n2(Readfile.Getsubfolders())
             for i in Loc_Arr:
-                print("The current array is:",i[0],"n1 is:",i[1],"n2 is:",i[2],"\n")
+                print("The current file is:",i[0],"n1 is:",i[1],"n2 is:",i[2],"\n")
+        if (sys.argv[i] == "l"):
+            Loc_Arr = Readfile.get_LOC_In_All_Subirectories(Readfile.Getsubfolders())
+            for i in Loc_Arr:
+                print ("The current file is:",i[0]," Lines of Code:",i[1],"\n")
