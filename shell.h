@@ -8,6 +8,7 @@
 char *pwd;
 char *cmd;
 char **args;
+char **args_pipe;
 char *time_str;
 
 // stack variables
@@ -20,9 +21,10 @@ struct tm *timeinfo;
 void update_time();
 int update_pwd();
 char **tokenize(char *input);
+char **pretokenize(char *input);
 int execute();
 int loop();
-
+int check_pipe(char *input);
 // built-ins
 const int builtin_count;
 
