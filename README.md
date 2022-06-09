@@ -4,8 +4,7 @@ PizzaSHELL (a.k.a.) pzash
 ## Features
 ### Implemented
 - [x] Editable input, history, and basic autocompletion (through `<readline.h>`)
-- [x] Pizza prompt 🍕
-  - [x] Shows current $PWD and timestamp
+- [x] Pizza prompt 🍕 (shows current working directory and timestamp)
 - [x] Piping!
 - [x] Special character expansion (currently only `$` and `~`)
 - [x] Whitespace stripping
