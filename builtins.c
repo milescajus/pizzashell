@@ -150,7 +150,7 @@ int echo(char **args)
 int canal()
 {
     if (!fork()) {
-        execlp("python", "python", "./Main.py", NULL);
+        execlp("python", "python", "./complexity/Main.py", NULL);
     } else {
         wait(NULL);
     }
