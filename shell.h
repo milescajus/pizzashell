@@ -17,8 +17,6 @@
 #else
     #include <readline/readline.h>
     #include <readline/history.h>
-#endif
-#ifdef __FreeBSD__
     #include <sys/wait.h>
 #endif
 

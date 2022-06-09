@@ -157,7 +157,7 @@ int update_pwd()
         return -1;
 
     // get current dir
-    pwd = getwd(NULL);
+    getcwd(pwd, MAXPATHLEN);
 
     // update PWD to current dir
     if (setenv("PWD", pwd, 1) < 0)

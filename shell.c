@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     cmds = (char **)calloc(sizeof(char *), SIZE);
     args = (char **)calloc(sizeof(char *), SIZE);
 
-    pwd = getwd(NULL);
+    getcwd(pwd, MAXPATHLEN);
 
     if (argc > 1 && strcmp(argv[1], "-c") == 0) {
         // run command directly
