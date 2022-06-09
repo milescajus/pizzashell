@@ -55,10 +55,11 @@ int prompt()
             cmds[i]++;
 
         int arg_count = tokenize(args, cmds[i], " ");
+        expand(args, arg_count);
 
         first_cmd = (i == 0);
         last_cmd = (i == cmd_count - 1);
-        execute(args, arg_count, first_cmd, last_cmd);
+        execute(args, first_cmd, last_cmd);
     }
 
     return 0;
@@ -82,7 +83,35 @@ int tokenize(char **dest, char *source, char *delim)
     return len;
 }
 
-int execute(char **args, int arg_count, int first_cmd, int last_cmd)
+int expand(char **args, int len)
+{
+    // replaces special chars like ~, $, *
+
+    for (int i = 0; i < len; ++i) {
+        if (args[i][0] == '$') {
+            char *envar = strsep(&args[i], "/");    // get everything between '$' and first '/' or '\0'
+            envar = getenv(++envar);                // replace $HOME with env[HOME]
+
+            if (args[i] == NULL)
+                args[i] = envar;
+
+            strcat(envar, "/");
+            args[i] = strcat(envar, args[i]);
+        }
+
+        if (args[i][0] == '~') {
+            char *newdest = (char *)malloc(strlen(getenv("HOME")) + strlen(args[i]) - 1);
+            strcpy(newdest, getenv("HOME"));
+            strcat(newdest, ++args[i]);
+            args[i] = newdest;
+            free(newdest);
+        }
+    }
+
+    return 0;
+}
+
+int execute(char **args, int first_cmd, int last_cmd)
 {
     // check for built-in
     for (int i = 0; i < builtin_count; ++i) {

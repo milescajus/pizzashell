@@ -44,7 +44,8 @@ void update_time();
 int update_pwd();
 int prompt();
 int tokenize(char **dest, char *source, char *delim);
-int execute(char **args, int arg_count, int first_cmd, int last_cmd);
+int expand(char **args, int len);
+int execute(char **args, int first_cmd, int last_cmd);
 
 // built-ins
 int cd(char **args);

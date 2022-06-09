@@ -67,11 +67,6 @@ int cd(char **args)
     if (strcmp(dest, "-") == 0)
         dest = getenv("OLDPWD");
 
-    if (dest[0] == '~') {
-        strcpy(dest, getenv("HOME"));
-        strcat(dest, ++args[1]);
-    }
-
     if (chdir(dest) < 0)
         return -1;
 
@@ -137,9 +132,6 @@ int echo(char **args)
         str = args[2] == NULL ? "" : args[2];
         newline = 0;
     }
-
-    if (str[0] == '$')
-        str = getenv(++str);
 
     char *fmt = newline ? "%s\n" : "%s";
     printf(fmt, str);

@@ -1,6 +1,8 @@
 LIBS := -ledit -lm
 default:
 	cc -std=c99 -Wall shell.c builtins.c history.c $(LIBS) -o pzash -I/usr/local/include
+debug:
+	cc -g -std=c99 -Wall shell.c builtins.c history.c $(LIBS) -o pzash -I/usr/local/include
 all:
 	cc -c shell.c -o shell.o
 	cc -c builtins.c -o builtins.o
