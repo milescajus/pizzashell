@@ -9,6 +9,7 @@ PizzaSHELL (a.k.a.) pzash
 - [x] Piping!
 - [x] Special character expansion (currently only `$` and `~`)
 - [x] Whitespace stripping
+- [x] Non-interactive execution (with `-c`)
 
 #### Built-ins
   - [x] `cd` with previous directory switching (`$ cd -`)
