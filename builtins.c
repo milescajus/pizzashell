@@ -84,7 +84,11 @@ int info(char **args)
 
     struct stat info;
     stat(fname, &info);
-    printf("%lld, %u, %u\n", info.st_size, info.st_uid, info.st_mode);
+    #ifdef __APPLE__
+        printf("%lld, %u, %u\n", info.st_size, info.st_uid, info.st_mode);
+    #else
+        printf("%lu, %u, %u\n", info.st_size, info.st_uid, info.st_mode);
+    #endif
     return 0;
 }
 
