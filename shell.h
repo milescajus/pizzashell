@@ -29,11 +29,11 @@ char *pwd;      // current directory
 char *line;     // user input, malloc by readline
 char **cmds;    // array of commands
 char **args;    // array of args per command
-char *time_str;
+char *time_str; // to hold current time
 
 // stack variables
-int fd1[2];
-int fd2[2];
+int fd1[2];     // first pipe filedesc
+int fd2[2];     // second pipe filedesc
 pid_t pid;
 time_t rawtime;
 struct tm *timeinfo;
