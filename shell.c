@@ -96,7 +96,7 @@ int execute(char **args, int arg_count, int first_cmd, int last_cmd)
         }
     }
 
-    // pipe handling, TODO: handle builtins
+    // pipe handling
     if (!last_cmd) {
         if (pipe(fd2) < 0) {
             perror("PIPE ERROR");
