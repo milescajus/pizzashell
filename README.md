@@ -21,6 +21,7 @@ PizzaSHELL (a.k.a.) pzash
 
 ### TODO
 - [ ] True wildcard expansion (`*`)
+- [ ] Quote handling (especially for non-interactive mode)
 - [ ] Compiler awareness (like `git` status but for `C`)
 - [ ] Regex
 - [ ] Expose `<math.h>` functions
