@@ -94,15 +94,6 @@ int tokenize(char **dest, char *source, char *delim)
     // splits source by delimiter into destination array
     // skips leading delims and empties
 
-    /* beautiful but leaves empties
-    int len = -1;
-    while ((dest[++len] = strsep(&source, delim)));
-
-    // strip trailing empties
-    while (**(dest - 1 + len) == '\0') { len--; }
-    dest[len] = NULL;
-    */
-
     // strip leading spaces
     while (*source == *delim) { source++; }
 
