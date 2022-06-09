@@ -64,8 +64,11 @@ int prompt()
     if (line == NULL)
         return 1;
 
-    // only execute actual commands
-    if (strlen(line) == 0)
+    // strip leading spaces
+    while (line[0] == ' ') { line++; }
+
+    // handle empty input
+    if (line[0] == '\0')
         return 0;
 
     // add line to readline history
