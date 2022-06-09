@@ -1,26 +1,28 @@
 # pizzashell
 PizzaSHELL (a.k.a.) pzash
 
-TODO
+## Features
+### Implemented
+- [x] Editable input, history, and basic autocompletion (through `<readline.h>`)
+- [x] Pizza prompt 🍕
+  - [x] Shows current $PWD and timestamp
+- [x] Piping!
+- [x] Special character expansion (currently only `$` and `~`)
+- [x] Whitespace stripping
 
-Make it work [x]
-History [x]
-Autocomplete
-Implement CD
-Atmosphere
-Complexity analysis
-Print file info
-(*) Implementing Makefile/C awareness.
-Colored output for file types, directories, etc.
-Arithmetic operations
-Backup/dump folder (copy a file with certain parameters into another folder)
-Help command for shell
+#### Built-ins
+  - [x] `cd` with previous directory switching (`$ cd -`)
+  - [x] Help function
+  - [x] Two-operand math
+  - [x] File info
+  - [x] Echo
+  - [x] Complexity analysis (python script)
 
-Hopefully TODO
-
-Multiplexing
-Color coding
-Regex
-
-Functionality to automatically order pizza
-Autocompletion
+### TODO
+- [ ] True wildcard expansion (`*`)
+- [ ] Compiler awareness (like `git` status but for `C`)
+- [ ] Regex
+- [ ] Expose `<math.h>` functions
+- [ ] Aliases (e.g. `ll=ls -l; ls=ls -g; grep=grep --color`)
+  - especially for color-by-default
+- [ ] Pizza ordering
