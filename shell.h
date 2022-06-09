@@ -23,18 +23,18 @@
 #define builtin_count 6
 
 // heap variables
-char *pwd;      // current directory
-char *line;     // user input, malloc by readline
-char **cmds;    // array of commands
-char **args;    // array of args per command
-char *time_str; // to hold current time
+extern char *pwd;      // current directory
+extern char *line;     // user input, malloc by readline
+extern char **cmds;    // array of commands
+extern char **args;    // array of args per command
+extern char *time_str; // to hold current time
 
 // stack variables
-int fd1[2];     // first pipe filedesc
-int fd2[2];     // second pipe filedesc
-pid_t pid;
-time_t rawtime;
-struct tm *timeinfo;
+extern int fd1[2];     // first pipe filedesc
+extern int fd2[2];     // second pipe filedesc
+extern pid_t pid;
+extern time_t rawtime;
+extern struct tm *timeinfo;
 
 // shell.c functions
 void update_time();
@@ -52,7 +52,7 @@ int math(char **args);
 int echo(char **args);
 int canal();
 
-int (*builtins[builtin_count]) (char **);
-char *builtin_names[builtin_count];
+extern int (*builtins[builtin_count]) (char **);
+extern char *builtin_names[builtin_count];
 
 #endif
