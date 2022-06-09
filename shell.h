@@ -27,14 +27,13 @@ extern char *pwd;      // current directory
 extern char *line;     // user input, malloc by readline
 extern char **cmds;    // array of commands
 extern char **args;    // array of args per command
-extern char *time_str; // to hold current time
 
 // stack variables
 extern int fd1[2];     // first pipe filedesc
 extern int fd2[2];     // second pipe filedesc
 extern pid_t pid;
 extern time_t rawtime;
-extern struct tm *timeinfo;
+extern char time_str[9];
 
 // shell.c functions
 void update_time();

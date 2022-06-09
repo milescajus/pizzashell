@@ -6,21 +6,18 @@ char *pwd;      // current directory
 char *line;     // user input, malloc by readline
 char **cmds;    // array of commands
 char **args;    // array of args per command
-char *time_str; // to hold current time
 
 // stack variables
 int fd1[2];     // first pipe filedesc
 int fd2[2];     // second pipe filedesc
 pid_t pid;
-time_t rawtime;
-struct tm *timeinfo;
+char time_str[9];
 
 int main(int argc, char *argv[])
 {
     int ret = 0;
 
     // initialize heap variables
-    time_str = (char *)calloc(sizeof(char), 8);
     pwd = (char *)calloc(sizeof(char), MAXPATHLEN);
     cmds = (char **)calloc(sizeof(char *), SIZE);
     args = (char **)calloc(sizeof(char *), SIZE);
@@ -48,7 +45,6 @@ int main(int argc, char *argv[])
     free(args);
     free(cmds);
     free(pwd);
-    free(time_str);
 
     printf("\n");
     exit(0);

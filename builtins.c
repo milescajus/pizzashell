@@ -1,5 +1,7 @@
 #include "shell.h"
 
+time_t rawtime;
+
 // LIST OF BUILT-INS
 int (*builtins[]) (char **) = {&cd, &help, &info, &math, &echo, &canal};
 char *builtin_names[] = {"cd", "help", "info", "math", "echo", "canal"};
@@ -117,6 +119,9 @@ int math(char **args)
         case '/':
             res = (float)t1 / (float)t2;
             break;
+        default:
+            res = 0.f;
+            break;
     }
 
     if (fmod(res, 1.f) == 0)
@@ -173,6 +178,5 @@ int update_pwd()
 void update_time()
 {
     rawtime = time(NULL);
-    timeinfo = localtime(&rawtime);
-    strftime(time_str, 8, "%H:%M:%S", timeinfo);
+    strftime(time_str, 9, "%T", localtime(&rawtime));
 }
