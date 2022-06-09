@@ -26,7 +26,7 @@
 
 // heap variables
 char *pwd;      // current directory
-char *line;     // user input
+char *line;     // user input, malloc by readline
 char **cmds;    // array of commands
 char **args;    // array of args per command
 char *time_str;

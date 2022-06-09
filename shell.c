@@ -6,7 +6,6 @@ int main()
     // initialize variables and alloc mem
     ret = 0;
     time_str = (char *)calloc(sizeof(char), 8);
-    line = (char *)calloc(sizeof(char), SIZE);
     pwd = (char *)calloc(sizeof(char), MAXPATHLEN);
     cmds = (char **)calloc(sizeof(char *), SIZE);
     args = (char **)calloc(sizeof(char *), SIZE);
