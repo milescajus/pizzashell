@@ -27,9 +27,9 @@ int main(int argc, char *argv[])
     if (argc > 1 && strcmp(argv[1], "-c") == 0) {
         // run command directly
 
-        for (int i = 2; i < argc; ++i)
+        for (int i = 0; i < argc; ++i)
             // copy args from argv
-            args[i - 2] = argv[i];
+            *(args + i) = argv[i + 2];
 
         execute(args, 1, 1);
 
@@ -64,26 +64,22 @@ int prompt()
     if (line == NULL)
         return 1;
 
-    // strip leading spaces
-    while (line[0] == ' ') { line++; }
-
     // handle empty input
-    if (line[0] == '\0')
+    if (*line == '\0')
         return 0;
 
     // add line to readline history
     add_history(line);
 
     int cmd_count = tokenize(cmds, line, "|");
+
     int first_cmd;
     int last_cmd;
 
     for (int i = 0; i < cmd_count; ++i) {
-        if (cmds[i][0] == ' ')  // command after | pipe has leading space
-            cmds[i]++;
+        int arg_count = tokenize(args, *(cmds + i), " ");
 
-        int arg_count = tokenize(args, cmds[i], " ");
-        // expand(args, arg_count);
+        expand(args, arg_count);
 
         first_cmd = (i == 0);
         last_cmd = (i == cmd_count - 1);
@@ -95,17 +91,24 @@ int prompt()
 
 int tokenize(char **dest, char *source, char *delim)
 {
-    // splits a char array by spaces and adds terminating null
+    // splits source by delimiter into destination array
+    // skips leading delims and empties
+
+    /* beautiful but leaves empties
+    int len = -1;
+    while ((dest[++len] = strsep(&source, delim)));
+
+    // strip trailing empties
+    while (**(dest - 1 + len) == '\0') { len--; }
+    dest[len] = NULL;
+    */
+
+    // strip leading spaces
+    while (*source == *delim) { source++; }
 
     int len = 0;
-    while ((dest[len] = strsep(&source, delim)) != NULL) { len++; }
-
-    // rudimentary way to terminate at 2 or more spaces
-    for (int i = 0; i < len; ++i) {
-        if (strcmp(dest[i], "") == 0) {
-            dest[i] = NULL;
-            break;
-        }
+    while ((dest[len] = strsep(&source, delim))) {
+        if (*dest[len] != '\0') len++;  // only iterate on non-empty
     }
 
     return len;
@@ -114,26 +117,44 @@ int tokenize(char **dest, char *source, char *delim)
 void expand(char **args, int len)
 {
     // replaces special chars like ~, $, *
+    // TODO: scan each character, not just first
+    // TODO: solve insecure use of strcpy/strcat
 
     for (int i = 0; i < len; ++i) {
-        printf("arg[%d]: %s", i, args[i]);
-        if (args[i][0] == '$') {
-            char *envar = strsep(&args[i], "/");    // get everything until first '/' or '\0'
-            envar = getenv(++envar);                // replace $XX with env[XX], DON'T MODIFY!
+        char fc = **(args + i);     // get the first character of each arg
+        if (fc != '$' && fc != '~' && fc != '*')
+            continue;
 
-            char *newarg = (char *)malloc(sizeof envar + sizeof args[i] + 1);   // +1 for '/'
-            strcpy(newarg, envar);
-            strcat(newarg, "/");
+        char *first_term = strsep((args + i), "/");       // get everything until first '/' or '\0'
 
-            args[i] = (args[i] == NULL) ? newarg : strcat(newarg, args[i]);
-            // gets freed in main()
+        switch (*first_term) {
+            case '$':
+                first_term = getenv(++first_term);      // replace $XX with env[XX], DON'T MODIFY!
+                break;
+            case '~':
+                first_term = getenv("HOME");
+                break;
+            case '*':   // TODO: implement true wildcards
+                break;
         }
+
+        char *newarg = (char *)malloc(sizeof first_term + sizeof *(args + i) + 1);   // +1 for '/'
+        strcpy(newarg, first_term);
+        strcat(newarg, "/");
+
+        *(args + i) = (*(args + i) == NULL) ? newarg : strcat(newarg, *(args + i));
+        // gets freed in main()
     }
 }
 
 int execute(char **args, int first_cmd, int last_cmd)
 {
-    char *command = args[0];
+    char *command = *args;
+
+    if (command == NULL) {
+        fprintf(stderr, "How did this happen? We're smarter than this.\n");
+        exit(-1);
+    }
 
     // check for built-in
     for (int i = 0; i < builtin_count; ++i) {
