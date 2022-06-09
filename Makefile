@@ -1,7 +1,13 @@
 CC 		= cc
 SRC		= shell.c builtins.c
 OBJ		= shell.o builtins.o
-LDFLAGS	= -ledit -lm
+UNAME_S	= $(shell uname -s)
+LDFLAGS	= -lm
+ifeq ($(UNAME_S), Linux)
+	LDFLAGS	+= -lreadline
+else
+	LDFLAGS	+= -ledit
+endif
 CFLAGS	= -std=gnu11 -Wall -I/usr/local/include
 PROGRAM	= pzash
 
