@@ -84,7 +84,7 @@ int info(char **args)
 
     struct stat info;
     stat(fname, &info);
-    printf("%lu, %u, %u\n", info.st_size, info.st_uid, info.st_mode);
+    printf("%lld, %u, %u\n", info.st_size, info.st_uid, info.st_mode);
     return 0;
 }
 

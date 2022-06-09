@@ -1,10 +1,11 @@
 #include "shell.h"
 #define SIZE 256
 
-int main()
+int main(int argc, char *argv[])
 {
-    // initialize variables and alloc mem
-    ret = 0;
+    int ret = 0;
+
+    // initialize heap variables
     time_str = (char *)calloc(sizeof(char), 8);
     pwd = (char *)calloc(sizeof(char), MAXPATHLEN);
     cmds = (char **)calloc(sizeof(char *), SIZE);
@@ -12,13 +13,27 @@ int main()
 
     pwd = getwd(NULL);
 
-    while (ret < 1) { ret = prompt(); }
+    if (argc > 1 && strcmp(argv[1], "-c") == 0) {
+        // run command directly
+
+        for (int i = 2; i < argc; ++i)
+            // copy args from argv
+            args[i - 2] = argv[i];
+
+        execute(args, 1, 1);
+
+    } else {
+        // start interactive shell
+
+        while (ret < 1) { ret = prompt(); }
+        free(line);
+
+    }
 
     // free memory for graceful exit
-    free(pwd);
-    free(line);
-    free(cmds);
     free(args);
+    free(cmds);
+    free(pwd);
     free(time_str);
 
     printf("\n");
@@ -55,7 +70,7 @@ int prompt()
             cmds[i]++;
 
         int arg_count = tokenize(args, cmds[i], " ");
-        expand(args, arg_count);
+        // expand(args, arg_count);
 
         first_cmd = (i == 0);
         last_cmd = (i == cmd_count - 1);
@@ -83,41 +98,35 @@ int tokenize(char **dest, char *source, char *delim)
     return len;
 }
 
-int expand(char **args, int len)
+void expand(char **args, int len)
 {
     // replaces special chars like ~, $, *
 
     for (int i = 0; i < len; ++i) {
+        printf("arg[%d]: %s", i, args[i]);
         if (args[i][0] == '$') {
-            char *envar = strsep(&args[i], "/");    // get everything between '$' and first '/' or '\0'
-            envar = getenv(++envar);                // replace $HOME with env[HOME]
+            char *envar = strsep(&args[i], "/");    // get everything until first '/' or '\0'
+            envar = getenv(++envar);                // replace $XX with env[XX], DON'T MODIFY!
 
-            if (args[i] == NULL)
-                args[i] = envar;
+            char *newarg = (char *)malloc(sizeof envar + sizeof args[i] + 1);   // +1 for '/'
+            strcpy(newarg, envar);
+            strcat(newarg, "/");
 
-            strcat(envar, "/");
-            args[i] = strcat(envar, args[i]);
-        }
-
-        if (args[i][0] == '~') {
-            char *newdest = (char *)malloc(strlen(getenv("HOME")) + strlen(args[i]) - 1);
-            strcpy(newdest, getenv("HOME"));
-            strcat(newdest, ++args[i]);
-            args[i] = newdest;
-            free(newdest);
+            args[i] = (args[i] == NULL) ? newarg : strcat(newarg, args[i]);
+            // gets freed in main()
         }
     }
-
-    return 0;
 }
 
 int execute(char **args, int first_cmd, int last_cmd)
 {
+    char *command = args[0];
+
     // check for built-in
     for (int i = 0; i < builtin_count; ++i) {
-        if (strcmp(args[0], builtin_names[i]) == 0) {
+        if (strcmp(command, builtin_names[i]) == 0) {
             if (builtins[i](args) < 0) {
-                perror(args[0]);
+                perror(command);
                 return -1;
             }
 
@@ -156,7 +165,7 @@ int execute(char **args, int first_cmd, int last_cmd)
                 close(fd2[1]);
             }
 
-            if (execvp(args[0], args) < 0) { perror("pzash"); }
+            if (execvp(command, args) < 0) { perror("pzash"); }
             exit(-1);    // only runs if execvp fails anyway
 
         default:

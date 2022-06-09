@@ -32,7 +32,6 @@ char **args;    // array of args per command
 char *time_str;
 
 // stack variables
-int ret;
 int fd1[2];
 int fd2[2];
 pid_t pid;
@@ -44,7 +43,7 @@ void update_time();
 int update_pwd();
 int prompt();
 int tokenize(char **dest, char *source, char *delim);
-int expand(char **args, int len);
+void expand(char **args, int len);
 int execute(char **args, int first_cmd, int last_cmd);
 
 // built-ins
