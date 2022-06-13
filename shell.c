@@ -109,9 +109,8 @@ int tokenize(char **dest, char *source, char *delim)
 
 void expand(char **args, int len)
 {
-    // replaces special chars like ~, $, *
-    // TODO: scan each character, not just first
-    // TODO: solve insecure use of strcpy/strcat
+    // performs sh-like word expansion
+    // i.e. replaces special chars like ~, $, *
 
     for (int i = 1; i < len; ++i) {
         /*
@@ -143,19 +142,19 @@ void expand(char **args, int len)
         // gets freed in main()
         */
 
-        char **w;
         // char *newarg = (char *)calloc(sizeof(char), SIZE);
 
+        char **w;
         wordexp(*(args + i), &p, 0);
         w = p.we_wordv;
 
-        /*
         for (int j = 0; j < p.we_wordc; ++j) {
-            *(*(args + i) + j + 1) = *(*(args + i) + j); // TODO: SHIFT ARGS BY p.we_wordc AND INSERT w
-            *(*(args + i) + j) = *w[j];
+            if (j > 1)
+                args[i + j + 1] = args[i + j];
+            args[i + j] = w[j];
         }
-        */
-        *(args + i) = w[0];
+
+        // *(args + i) = w[0];
     }
 }
 
