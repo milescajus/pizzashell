@@ -49,10 +49,10 @@ int help(char **args)
             printf("It is delicious. Need I say more?\n");
             break;
         case HANAL:
-            printf("Analyze the current directory and all subdirectories. Returns Halstead vocabularry n1: count of distinct operators n2: count of distinct operands ");
+            printf("Analyze the current directory and all subdirectories. Returns Halstead vocabulary n1: count of distinct operators n2: count of distinct operands.");
             break;
         case CANAL:
-            printf("Analyze the current directory and all subdirectories. Returns lines of code for each file with extensions .c,.h or .py. \n");
+            printf("Analyze the current directory and all subdirectories. Returns lines of code for each file with extensions .c, .h, or .py.\n");
             break;
         default:
             printf("undefined topic\n");
