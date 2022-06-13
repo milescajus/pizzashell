@@ -113,48 +113,27 @@ void expand(char **args, int len)
     // i.e. replaces special chars like ~, $, *
 
     for (int i = 1; i < len; ++i) {
-        /*
-        char fc = **(args + i);     // get the first character of each arg
-        if (fc != '$' && fc != '~' && fc != '*')
-            continue;
-
-        char *first_term = strsep((args + i), "/");       // get everything until first '/' or '\0'
-
-        switch (*first_term) {
-            case '$':
-                first_term = getenv(++first_term);      // replace $XX with env[XX], DON'T MODIFY!
-                break;
-            case '~':
-                first_term = getenv("HOME");
-                break;
-            case '*':   // TODO: implement true wildcards
-                break;
-        }
-
-        size_t remainder = (*(args + i) == NULL) ? 2 : strlen(*(args + i)) + 2;         // +2 for '/\0'
-
-        printf("first_term: %s\tstrlen first_term: %lu\t remainder: %lu\n", first_term, strlen(first_term), remainder);
-        char *newarg = (char *)malloc(strlen(first_term) + remainder);
-        strcpy(newarg, first_term);
-        strcat(newarg, "/");
-
-        *(args + i) = (remainder == 2) ? newarg : strcat(newarg, *(args + i));
-        // gets freed in main()
-        */
-
-        // char *newarg = (char *)calloc(sizeof(char), SIZE);
-
         char **w;
+
+        // expand special characters
         wordexp(*(args + i), &p, 0);
         w = p.we_wordv;
 
+        int extras = p.we_wordc - 1;
+
+        // shift args to account for expansion
+        for (int j = i; j < i + extras; ++j) {
+            args[j + extras] = args[j];
+        }
+
+        // insert new args into empty space
         for (int j = 0; j < p.we_wordc; ++j) {
-            if (j > 1)
-                args[i + j + 1] = args[i + j];
             args[i + j] = w[j];
         }
 
-        // *(args + i) = w[0];
+        // update total len
+        len += p.we_wordc - 1;
+        printf("current arg: %s\n", args[i]);
     }
 }
 
