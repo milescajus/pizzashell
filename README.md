@@ -9,6 +9,9 @@ PizzaSHELL (a.k.a.) pzash
 - [x] Special character expansion (currently only `$` and `~`)
 - [x] Whitespace stripping
 - [x] Non-interactive execution (with `-c`)
+- [x] True wildcard expansion/globbing (`*`)
+- [x] Quote handling (especially for non-interactive mode)
+    - both of the above implemented with `<wordexp.h>`
 
 #### Built-ins
   - [x] `cd` with previous directory switching (`$ cd -`)
@@ -19,11 +22,7 @@ PizzaSHELL (a.k.a.) pzash
   - [x] Complexity analysis (python script)
 
 ### TODO
-- [ ] True wildcard expansion (`*`)
-- [ ] Quote handling (especially for non-interactive mode)
-- [ ] Compiler awareness (like `git` status but for `C`)
-- [ ] Regex
-- [ ] Expose `<math.h>` functions
+- [ ] Expose `<math.h>` functions?
 - [ ] Aliases (e.g. `ll=ls -l; ls=ls -g; grep=grep --color`)
   - especially for color-by-default
 - [ ] Pizza ordering
