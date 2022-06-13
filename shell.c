@@ -119,11 +119,11 @@ void expand(char **args, int len)
         wordexp(*(args + i), &p, 0);
         w = p.we_wordv;
 
-        int extras = p.we_wordc - 1;
+        int offset = p.we_wordc - 1;
 
         // shift args to account for expansion
-        for (int j = i; j < i + extras; ++j) {
-            args[j + extras] = args[j];
+        for (int j = len - 1 + offset; j > i; --j) {
+            args[j] = args[j - offset];
         }
 
         // insert new args into empty space
@@ -132,7 +132,7 @@ void expand(char **args, int len)
         }
 
         // update total len
-        len += p.we_wordc - 1;
+        len += offset;
         printf("current arg: %s\n", args[i]);
     }
 }
