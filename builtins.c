@@ -154,7 +154,7 @@ int echo(char **args)
 int canal()
 {
     if (!fork()) {
-        execlp("python", "python", "./complexity/Main.py", NULL);
+        execlp("python3", "python3", "./complexity/Main.py", NULL);
     } else {
         wait(NULL);
     }
@@ -165,7 +165,7 @@ int canal()
 int hanal()
 {
     if (!fork()) {
-        execlp("python", "python", "./complexity/Main2.py", NULL);
+        execlp("python3", "python3", "./complexity/Main2.py", NULL);
     } else {
         wait(NULL);
     }
