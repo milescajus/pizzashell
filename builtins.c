@@ -3,13 +3,13 @@
 time_t rawtime;
 
 // LIST OF BUILT-INS
-int (*builtins[]) (char **) = {&cd, &help, &info, &math, &echo, &canal};
-char *builtin_names[] = {"cd", "help", "info", "math", "echo", "canal"};
+int (*builtins[]) (char **) = {&cd, &help, &info, &math, &echo, &canal, &hanal};
+char *builtin_names[] = {"cd", "help", "info", "math", "echo", "canal", "hanal"};
 
 // HELP TOPICS
-enum topics {HELP, TOPICS, BUILTINS, ECHO, PIZZA, CANAL};
-char *help_topics[] = {"help", "topics", "builtins", "echo", "pizza", "canal"};
-int topic_count = 5;
+enum topics {HELP, TOPICS, BUILTINS, ECHO, PIZZA, CANAL, HANAL};
+char *help_topics[] = {"help", "topics", "builtins", "echo", "pizza", "canal", "hanal"};
+int topic_count = 7;
 
 // ACTUAL BUILT-IN FUNCTIONS
 int help(char **args)
@@ -47,6 +47,12 @@ int help(char **args)
             break;
         case PIZZA:
             printf("It is delicious. Need I say more?\n");
+            break;
+        case HANAL:
+            printf("Analyze the current directory and all subdirectories. Returns Halstead vocabularry n1: count of distinct operators n2: count of distinct operands ");
+            break;
+        case CANAL:
+            printf("Analyze the current directory and all subdirectories. Returns lines of code for each file with extensions .c,.h or .py. \n");
             break;
         default:
             printf("undefined topic\n");
@@ -149,6 +155,17 @@ int canal()
 {
     if (!fork()) {
         execlp("python", "python", "./complexity/Main.py", NULL);
+    } else {
+        wait(NULL);
+    }
+
+    return 0;
+}
+
+int hanal()
+{
+    if (!fork()) {
+        execlp("python", "python", "./complexity/Main2.py", NULL);
     } else {
         wait(NULL);
     }
