@@ -134,16 +134,14 @@ int math(char **args)
 
 int echo(char **args)
 {
-    char *str = args[1] == NULL ? "" : args[1];
-    int newline = 1;
+    int newline = (strcmp(args[1], "-n") == 0) ? 0 : 1;
 
-    if (strcmp(str, "-n") == 0) {
-        str = args[2] == NULL ? "" : args[2];
-        newline = 0;
-    }
+    int i = 1;
+    while (args[i]) { printf("%s ", args[i++]); }
 
-    char *fmt = newline ? "%s\n" : "%s";
-    printf(fmt, str);
+    if (newline)
+        printf("\n");
+
     return 0;
 }
 
