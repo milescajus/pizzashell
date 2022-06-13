@@ -6,6 +6,7 @@ char *pwd;      // current directory
 char *line;     // user input, malloc by readline
 char **cmds;    // array of commands
 char **args;    // array of args per command
+wordexp_t p;
 
 // stack variables
 int fd1[2];     // first pipe filedesc
@@ -45,6 +46,7 @@ int main(int argc, char *argv[])
     free(args);
     free(cmds);
     free(pwd);
+    wordfree(&p);
 
     printf("\n");
     exit(0);
@@ -111,7 +113,8 @@ void expand(char **args, int len)
     // TODO: scan each character, not just first
     // TODO: solve insecure use of strcpy/strcat
 
-    for (int i = 0; i < len; ++i) {
+    for (int i = 1; i < len; ++i) {
+        /*
         char fc = **(args + i);     // get the first character of each arg
         if (fc != '$' && fc != '~' && fc != '*')
             continue;
@@ -138,6 +141,21 @@ void expand(char **args, int len)
 
         *(args + i) = (remainder == 2) ? newarg : strcat(newarg, *(args + i));
         // gets freed in main()
+        */
+
+        char **w;
+        // char *newarg = (char *)calloc(sizeof(char), SIZE);
+
+        wordexp(*(args + i), &p, 0);
+        w = p.we_wordv;
+
+        /*
+        for (int j = 0; j < p.we_wordc; ++j) {
+            *(*(args + i) + j + 1) = *(*(args + i) + j); // TODO: SHIFT ARGS BY p.we_wordc AND INSERT w
+            *(*(args + i) + j) = *w[j];
+        }
+        */
+        *(args + i) = w[0];
     }
 }
 

@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <unistd.h>
+#include <wordexp.h>
 
 #ifdef __APPLE__
     #include <editline/readline.h>
