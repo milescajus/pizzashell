@@ -129,11 +129,14 @@ void expand(char **args, int len)
                 break;
         }
 
-        char *newarg = (char *)malloc(sizeof first_term + sizeof *(args + i) + 1);   // +1 for '/'
+        size_t remainder = (*(args + i) == NULL) ? 2 : strlen(*(args + i)) + 2;         // +2 for '/\0'
+
+        printf("first_term: %s\tstrlen first_term: %lu\t remainder: %lu\n", first_term, strlen(first_term), remainder);
+        char *newarg = (char *)malloc(strlen(first_term) + remainder);
         strcpy(newarg, first_term);
         strcat(newarg, "/");
 
-        *(args + i) = (*(args + i) == NULL) ? newarg : strcat(newarg, *(args + i));
+        *(args + i) = (remainder == 2) ? newarg : strcat(newarg, *(args + i));
         // gets freed in main()
     }
 }
