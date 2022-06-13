@@ -56,6 +56,12 @@ int prompt()
 {
     // main prompt loop
 
+    // ensure fresh memory for new input
+    for (int i = 0; i < SIZE; ++i) {
+        args[i] = NULL;
+        cmds[i] = NULL;
+    }
+
     update_time();
 
     // print prompt
@@ -116,7 +122,9 @@ void expand(char **args, int len)
         char **w;
 
         // expand special characters
-        wordexp(*(args + i), &p, 0);
+        if (wordexp(*(args + i), &p, 0))
+            perror("expansion: ");
+
         w = p.we_wordv;
 
         int offset = p.we_wordc - 1;
@@ -133,7 +141,6 @@ void expand(char **args, int len)
 
         // update total len
         len += offset;
-        printf("current arg: %s\n", args[i]);
     }
 }
 
