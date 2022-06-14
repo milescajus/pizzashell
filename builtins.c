@@ -98,12 +98,9 @@ int info(char **args)
 
     char *owner = u_info->pw_name;
     char *filetype = "unknown";
-    /*
-    char *perms = "00000";
-    // itoa(info.st_mode, perms, 8);
+    char perms[7];
 
     sprintf(perms, "%o", info.st_mode);
-    */
 
     if (S_ISREG(info.st_mode)) { filetype = "regular file"; }
     if (S_ISDIR(info.st_mode)) { filetype = "directory"; }
@@ -113,11 +110,11 @@ int info(char **args)
     if (S_ISLNK(info.st_mode)) { filetype = "symbolic link"; }
 
     #ifdef __APPLE__
-        printf("Name: %s\nSize: %lld B\nOwner: %s\nType: %s\n",
-                fname, info.st_size, owner, filetype);
+        printf(" File: %s\n Size: %lld B\nOwner: %s\n Type: %s\nPerms: %s\n",
+                fname, info.st_size, owner, filetype, &perms[2]);
     #else
-        printf("Name: %s\nSize: %lu B\nOwner: %s\nType: %s\n",
-                fname, info.st_size, owner, filetype);
+        printf(" File: %s\n Size: %lu B\nOwner: %s\n Type: %s\nPerms: %s\n",
+                fname, info.st_size, owner, filetype, &perms[2]);
     #endif
     return 0;
 }
