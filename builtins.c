@@ -7,8 +7,8 @@ int (*builtins[]) (char **) = {&cd, &help, &info, &math, &echo, &canal, &hanal};
 char *builtin_names[] = {"cd", "help", "info", "math", "echo", "canal", "hanal"};
 
 // HELP TOPICS
-enum topics {HELP, TOPICS, BUILTINS, ECHO, PIZZA, CANAL, HANAL};
-char *help_topics[] = {"help", "topics", "builtins", "echo", "pizza", "canal", "hanal"};
+enum topics {HELP, TOPICS, BUILTINS, CD, INFO, MATH, ECHO, PIZZA, CANAL, HANAL};
+char *help_topics[] = {"help", "topics", "builtins", "cd", "info", "math", "echo", "pizza", "canal", "hanal"};
 int topic_count = 7;
 
 // ACTUAL BUILT-IN FUNCTIONS
@@ -41,6 +41,15 @@ int help(char **args)
             break;
         case BUILTINS:
             printf("Available built-in functions:\ncd, help, info, math, echo\n");
+            break;
+        case CD:
+            printf("Usage: cd [-|\033[4mdirectory\033[0m]\n");
+            break;
+        case INFO:
+            printf("Usage: info [\033[4mfilename\033[0m]\n");
+            break;
+        case MATH:
+            printf("Usage: math [\033[4moperand\033[0m] [\033[4moperator\033[0m] [\033[4moperand\033[0m]\n");
             break;
         case ECHO:
             printf("Usage: echo [-n] [\033[4mstring\033[0m]\n");
