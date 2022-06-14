@@ -142,7 +142,7 @@ int echo(char **args)
 {
     int newline = (strcmp(args[1], "-n") == 0) ? 0 : 1;
 
-    int i = 1;
+    int i = newline ? 1 : 2;
     while (args[i]) { printf("%s ", args[i++]); }
 
     if (newline)
