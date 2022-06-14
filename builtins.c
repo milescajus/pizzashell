@@ -184,7 +184,7 @@ int canal()
 int hanal()
 {
     if (!fork()) {
-        execlp("python3", "python3", "./complexity/Main2.py", NULL);
+        execlp("python3", "python3", "./complexity/Main.py", "-h", NULL);
     } else {
         wait(NULL);
     }

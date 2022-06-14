@@ -3,29 +3,14 @@ import os
 import numpy as np
 import sys
 import Halstead as hal
-n = len(sys.argv)
-if( n == 1):
-    TypeArray =  np.array(([[0,".py"],[1,".c"],[2, ".h"]]))
-    # print (TypeArray.shape)
-    # print (TypeArray.size)
+TypeArray = np.array(([[0,".py"], [1,".c"], [2, ".h"]]))
 
+if ( len(sys.argv) == 1 or sys.argv[1] == "-l" ):
     Loc_Arr = Readfile.get_LOC_In_All_Subirectories(Readfile.Getsubfolders())
     for i in Loc_Arr:
-        print ("The current file is:",i[0]," Lines of Code:",i[1],"\n")
-    #
-    # print (Loc_Arr.shape)
-    # print (Loc_Arr.size)
-    # for i in Loc_Arr:
-    #    print("type: \n  name: \n ,LOC \n" TypeArray[2,i],Loc_Arr[1,i],Loc_Arr[2,i])
+        print("File:\033[92m", i[0], "\033[0m\n\tLines of Code:\033[33m", i[1], "\033[0m")
 
-# else:
-#     #if str(sys.argv).includes("l"):
-#     for i in range(1, n):
-#         if (sys.argv[i] == "h"):
-#             Loc_Arr = hal.get_n1_n2(Readfile.Getsubfolders())
-#             for i in Loc_Arr:
-#                 print("The current file is:",i[0],"n1 is:",i[1],"n2 is:",i[2],"\n")
-#         if (sys.argv[i] == "l"):
-#             Loc_Arr = Readfile.get_LOC_In_All_Subirectories(Readfile.Getsubfolders())
-#             for i in Loc_Arr:
-#                 print ("The current file is:",i[0]," Lines of Code:",i[1],"\n")
+else:
+    Loc_Arr = hal.get_n1_n2(Readfile.Getsubfolders())
+    for i in Loc_Arr:
+        print("File:\033[92m", i[0], "\033[0m\n\tn1:\033[33m", i[1], "\033[0m\n\tn2:\033[33m", i[2], "\033[0m")
