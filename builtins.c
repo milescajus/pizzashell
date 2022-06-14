@@ -85,17 +85,39 @@ int info(char **args)
 {
     char *fname = args[1];
 
-    if (fname == NULL) {
+    if (fname == NULL || args[2] != NULL) {
         printf("Usage: info \033[4mfilename\033[0m\n");
-        return -1;
+        return 0;
     }
 
     struct stat info;
-    stat(fname, &info);
+    if (lstat(fname, &info) < 0) { return -1; }
+
+    struct passwd *u_info;
+    u_info = getpwuid(info.st_uid);
+
+    char *owner = u_info->pw_name;
+    char *filetype = "unknown";
+    /*
+    char *perms = "00000";
+    // itoa(info.st_mode, perms, 8);
+
+    sprintf(perms, "%o", info.st_mode);
+    */
+
+    if (S_ISREG(info.st_mode)) { filetype = "regular file"; }
+    if (S_ISDIR(info.st_mode)) { filetype = "directory"; }
+    if (S_ISCHR(info.st_mode)) { filetype = "character device"; }
+    if (S_ISBLK(info.st_mode)) { filetype = "block device"; }
+    if (S_ISFIFO(info.st_mode)) { filetype = "named pipe"; }
+    if (S_ISLNK(info.st_mode)) { filetype = "symbolic link"; }
+
     #ifdef __APPLE__
-        printf("%lld, %u, %u\n", info.st_size, info.st_uid, info.st_mode);
+        printf("Name: %s\nSize: %lld B\nOwner: %s\nType: %s\n",
+                fname, info.st_size, owner, filetype);
     #else
-        printf("%lu, %u, %u\n", info.st_size, info.st_uid, info.st_mode);
+        printf("Name: %s\nSize: %lu B\nOwner: %s\nType: %s\n",
+                fname, info.st_size, owner, filetype);
     #endif
     return 0;
 }
