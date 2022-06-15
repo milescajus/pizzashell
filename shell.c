@@ -30,11 +30,6 @@ int main(int argc, char *argv[])
     if (argc > 1 && strcmp(argv[1], "-c") == 0) {
         // run command directly
 
-        /*
-        for (int i = 0; i < argc; ++i)
-            // copy args from argv
-            *(args + i) = argv[i + 2];
-        */
         if (argv[2] == NULL) {
             puts("Usage: pzash -c [\033[4mcommand\033[0m]");
             return -1;
@@ -123,6 +118,7 @@ int tokenize(char **dest, char *source, char *delim)
     // skip leading delims
     while (*source == *delim) { source++; }
 
+    // iterate until source is NULL
     int len = 0;
     while ((dest[len] = strsep(&source, delim))) {
         if (*dest[len] != '\0') len++;  // only iterate on non-empty
@@ -163,57 +159,6 @@ int expand(char **dest, char *source)
 
     return len;
 }
-
-/*
-int expand_old(char **args, int len)
-{
-    // performs sh-like word expansion
-    // i.e. replaces special chars like ~, $, *
-
-    for (int i = 1; i < len; ++i) {
-        char **w;
-
-        // expand special characters
-        int err = wordexp(*(args + i), &p, 0);
-        switch (err) {
-            case WRDE_BADCHAR:
-                puts("illegal character");
-                break;
-            case WRDE_BADVAL:
-                puts("undefined variable");
-                break;
-            case WRDE_NOSPACE:
-                puts("out of memory");
-                break;
-            case WRDE_SYNTAX:
-                puts("syntax error");
-                break;
-        }
-
-        if (err)
-            return -1;
-
-        w = p.we_wordv;
-
-        int offset = p.we_wordc - 1;
-
-        // shift args to account for expansion
-        for (int j = len - 1 + offset; j > i; --j) {
-            args[j] = args[j - offset];
-        }
-
-        // insert new args into empty space
-        for (int j = 0; j < p.we_wordc; ++j) {
-            args[i + j] = w[j];
-        }
-
-        // update total len
-        len += offset;
-    }
-
-    return 0;
-}
-*/
 
 int execute(char **args, int first_cmd, int last_cmd)
 {

@@ -32,8 +32,8 @@ extern char **cmds;    // array of commands
 extern char **args;    // array of args per command
 
 // stack variables
-extern int fd1[2];     // first pipe filedesc
-extern int fd2[2];     // second pipe filedesc
+extern int fd1[2];     // first pipe fildes
+extern int fd2[2];     // second pipe fildes
 extern pid_t pid;
 extern time_t rawtime;
 extern char time_str[9];
@@ -45,7 +45,6 @@ int prompt();
 void parse_run(char *line);
 int tokenize(char **dest, char *source, char *delim);
 int expand(char **dest, char *source);
-int expand_old(char **args, int len);
 int execute(char **args, int first_cmd, int last_cmd);
 
 // built-ins
