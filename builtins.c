@@ -105,17 +105,34 @@ int info(char **args)
     u_info = getpwuid(info.st_uid);
 
     char *owner = u_info->pw_name;
-    char *filetype = "unknown";
+    char *filetype;
     char perms[7];
 
     sprintf(perms, "%o", info.st_mode);
 
-    if (S_ISREG(info.st_mode)) { filetype = "regular file"; }
-    if (S_ISDIR(info.st_mode)) { filetype = "directory"; }
-    if (S_ISCHR(info.st_mode)) { filetype = "character device"; }
-    if (S_ISBLK(info.st_mode)) { filetype = "block device"; }
-    if (S_ISFIFO(info.st_mode)) { filetype = "named pipe"; }
-    if (S_ISLNK(info.st_mode)) { filetype = "symbolic link"; }
+    switch (info.st_mode & S_IFMT) {
+        case S_IFREG:
+            filetype = "regular file";
+            break;
+        case S_IFDIR:
+            filetype = "directory";
+            break;
+        case S_IFCHR:
+            filetype = "character device";
+            break;
+        case S_IFBLK:
+            filetype = "block device";
+            break;
+        case S_IFIFO:
+            filetype = "named pipe";
+            break;
+        case S_IFLNK:
+            filetype = "symbolic link";
+            break;
+        default:
+            filetype = "unknown";
+            break;
+    }
 
     #ifdef __APPLE__
         printf(" File: %s\n Size: %lld B\nOwner: %s\n Type: %s\nPerms: %s\n",
