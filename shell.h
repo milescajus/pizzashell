@@ -44,7 +44,8 @@ int update_pwd();
 int prompt();
 void parse_run(char *line);
 int tokenize(char **dest, char *source, char *delim);
-int expand(char **args, int len);
+int expand(char **dest, char *source);
+int expand_old(char **args, int len);
 int execute(char **args, int first_cmd, int last_cmd);
 
 // built-ins

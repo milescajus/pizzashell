@@ -104,9 +104,7 @@ void parse_run(char *line)
     int last_cmd;
 
     for (int i = 0; i < cmd_count; ++i) {
-        int arg_count = tokenize(args, *(cmds + i), " ");
-
-        if (expand(args, arg_count) < 0)
+        if (expand(args, *(cmds + i)) < 0)
             return;
 
         first_cmd = (i == 0);
@@ -122,7 +120,7 @@ int tokenize(char **dest, char *source, char *delim)
     // splits source by delimiter into destination array
     // skips leading delims and empties
 
-    // strip leading spaces
+    // skip leading delims
     while (*source == *delim) { source++; }
 
     int len = 0;
@@ -133,7 +131,41 @@ int tokenize(char **dest, char *source, char *delim)
     return len;
 }
 
-int expand(char **args, int len)
+int expand(char **dest, char *source)
+{
+    // splits by whitespace and performs sh-like word expansion
+    // i.e. replaces special chars like ~, $, *
+
+    int len = p.we_wordc;
+
+    int err = wordexp(source, &p, 0);
+    switch (err) {
+        case WRDE_BADCHAR:
+            puts("illegal character");
+            break;
+        case WRDE_BADVAL:
+            puts("undefined variable");
+            break;
+        case WRDE_NOSPACE:
+            puts("out of memory");
+            break;
+        case WRDE_SYNTAX:
+            puts("syntax error");
+            break;
+    }
+
+    if (err)
+        return -1;
+
+    for (int i = 0; i < p.we_wordc; ++i) {
+        dest[i] = p.we_wordv[i];
+    }
+
+    return len;
+}
+
+/*
+int expand_old(char **args, int len)
 {
     // performs sh-like word expansion
     // i.e. replaces special chars like ~, $, *
@@ -181,6 +213,7 @@ int expand(char **args, int len)
 
     return 0;
 }
+*/
 
 int execute(char **args, int first_cmd, int last_cmd)
 {
