@@ -18,7 +18,7 @@ int help(char **args)
     int topic = -1;
 
     if (topic_str == NULL) {
-        printf("Welcome to PIZZAshell :D\nTry using help with a tasty argument...\n");
+        puts("Welcome to PIZZAshell :D\nTry using help with a tasty argument...");
         return 0;
     }
 
@@ -31,7 +31,7 @@ int help(char **args)
 
     switch (topic) {
         case HELP:
-            printf("Usage: help [topic]\n");
+            puts("Usage: help [topic]");
             break;
         case TOPICS:
             printf("Help topics: ");
@@ -40,31 +40,31 @@ int help(char **args)
             printf("\n");
             break;
         case BUILTINS:
-            printf("Available built-in functions:\ncd, help, info, math, echo, canal, hanal\n");
+            puts("Available built-in functions:\ncd, help, info, math, echo, canal, hanal");
             break;
         case CD:
-            printf("Usage: cd [-|\033[4mdirectory\033[0m]\n");
+            puts("Usage: cd [-|\033[4mdirectory\033[0m]");
             break;
         case INFO:
-            printf("Usage: info [\033[4mfilename\033[0m]\n");
+            puts("Usage: info [\033[4mfilename\033[0m]");
             break;
         case MATH:
-            printf("Usage: math [\033[4moperand\033[0m] [\033[4moperator\033[0m] [\033[4moperand\033[0m]\n");
+            puts("Usage: math [\033[4moperand\033[0m] [\033[4moperator\033[0m] [\033[4moperand\033[0m]");
             break;
         case ECHO:
-            printf("Usage: echo [-n] [\033[4mstring\033[0m]\n");
+            puts("Usage: echo [-n] [\033[4mstring\033[0m]");
             break;
         case PIZZA:
-            printf("It is delicious. Need I say more?\n");
+            puts("It is delicious. Need I say more?");
             break;
         case CANAL:
-            printf("Analyze the current directory and all subdirectories. Prints lines of code for each file with extension '.c', '.h', or '.py'.\n");
+            puts("Analyze the current directory and all subdirectories. Prints lines of code for each file with extension '.c', '.h', or '.py'.");
             break;
         case HANAL:
-            printf("Analyze the current directory and all subdirectories. Prints Halstead vocabulary for each file with extension '.c' '.h' or '.py'.\n\tn1 is count of distinct operators\n\tn2 is count of distinct operands.");
+            puts("Analyze the current directory and all subdirectories. Prints Halstead vocabulary for each file with extension '.c' '.h' or '.py'.\n\tn1 is count of distinct operators\n\tn2 is count of distinct operands.");
             break;
         default:
-            printf("undefined topic\n");
+            puts("undefined topic");
             break;
     }
 
@@ -76,8 +76,8 @@ int cd(char **args)
     char *dest = args[1];
 
     if (dest == NULL) {
-        printf("Usage: cd \033[4mdirectory\033[0m\n");
-        return -1;
+        puts("Usage: cd \033[4mdirectory\033[0m");
+        return 0;
     }
 
     // change to previous dir
@@ -95,7 +95,7 @@ int info(char **args)
     char *fname = args[1];
 
     if (fname == NULL || args[2] != NULL) {
-        printf("Usage: info \033[4mfilename\033[0m\n");
+        puts("Usage: info \033[4mfilename\033[0m");
         return 0;
     }
 
@@ -131,8 +131,8 @@ int info(char **args)
 int math(char **args)
 {
     if (args[1] == NULL || args[2] == NULL || args[3] == NULL) {
-        printf("Usage: math \033[4mterm1\033[0m \033[4moperator\033[0m \033[4mterm2\033[0m\n");
-        return -1;
+        puts("Usage: math \033[4mterm1\033[0m \033[4moperator\033[0m \033[4mterm2\033[0m");
+        return 0;
     }
 
     int t1 = (int)strtol(args[1], NULL, 0);
@@ -168,6 +168,11 @@ int math(char **args)
 
 int echo(char **args)
 {
+    if (args[1] == NULL) {
+        puts("Usage: echo [-n] [\033[4mstring\033[0m]");
+        return 0;
+    }
+
     int newline = (strcmp(args[1], "-n") == 0) ? 0 : 1;
 
     int i = newline ? 1 : 2;
