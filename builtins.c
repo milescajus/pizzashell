@@ -151,9 +151,9 @@ int math(char **args)
         return 0;
     }
 
-    int t1 = (int)strtol(args[1], NULL, 0);
+    long t1 = strtol(args[1], NULL, 0);
     char op = args[2][0];
-    int t2 = (int)strtol(args[3], NULL, 0);
+    long t2 = strtol(args[3], NULL, 0);
 
     float res;
     switch (op) {
