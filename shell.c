@@ -99,6 +99,9 @@ void parse_run(char *line)
     int last_cmd;
 
     for (int i = 0; i < cmd_count; ++i) {
+        // ensure fresh args for each cmd
+        for (int i = 0; i < SIZE; ++i) { args[i] = NULL; }
+
         if (expand(args, *(cmds + i)) < 0)
             return;
 
