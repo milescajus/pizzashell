@@ -31,7 +31,7 @@ int help(char **args)
 
     switch (topic) {
         case HELP:
-            puts("Usage: help [topic]");
+            puts("Usage: help [\033[4mtopic\033[0m]");
             break;
         case TOPICS:
             printf("Help topics: ");
