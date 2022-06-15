@@ -76,8 +76,7 @@ int cd(char **args)
     char *dest = args[1];
 
     if (dest == NULL) {
-        puts("Usage: cd \033[4mdirectory\033[0m");
-        return 0;
+        dest = getenv("HOME");
     }
 
     // change to previous dir
@@ -169,7 +168,7 @@ int math(char **args)
 int echo(char **args)
 {
     if (args[1] == NULL) {
-        puts("Usage: echo [-n] [\033[4mstring\033[0m]");
+        puts("");
         return 0;
     }
 
