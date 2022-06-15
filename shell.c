@@ -180,6 +180,11 @@ int execute(char **args, int first_cmd, int last_cmd)
                 return -1;
             }
 
+            if (!last_cmd) {
+                puts("ooohh we don't support piping builtins yet...");
+                return -1;
+            }
+
             exit_status = 0;
             return 0;
         }
