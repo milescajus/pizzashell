@@ -9,7 +9,7 @@ char *builtin_names[] = {"cd", "help", "info", "math", "echo", "canal", "hanal"}
 // HELP TOPICS
 enum topics {HELP, TOPICS, BUILTINS, CD, INFO, MATH, ECHO, PIZZA, CANAL, HANAL};
 char *help_topics[] = {"help", "topics", "builtins", "cd", "info", "math", "echo", "pizza", "canal", "hanal"};
-int topic_count = 7;
+int topic_count = 10;
 
 // ACTUAL BUILT-IN FUNCTIONS
 int help(char **args)
@@ -40,7 +40,7 @@ int help(char **args)
             printf("\n");
             break;
         case BUILTINS:
-            printf("Available built-in functions:\ncd, help, info, math, echo\n");
+            printf("Available built-in functions:\ncd, help, info, math, echo, canal, hanal\n");
             break;
         case CD:
             printf("Usage: cd [-|\033[4mdirectory\033[0m]\n");
@@ -57,11 +57,11 @@ int help(char **args)
         case PIZZA:
             printf("It is delicious. Need I say more?\n");
             break;
-        case HANAL:
-            printf("Analyze the current directory and all subdirectories. Prints Halstead vocabulary for each file with extension '.c' '.h' or '.py'.\n\tn1 is count of distinct operators\n\tn2 is count of distinct operands.");
-            break;
         case CANAL:
             printf("Analyze the current directory and all subdirectories. Prints lines of code for each file with extension '.c', '.h', or '.py'.\n");
+            break;
+        case HANAL:
+            printf("Analyze the current directory and all subdirectories. Prints Halstead vocabulary for each file with extension '.c' '.h' or '.py'.\n\tn1 is count of distinct operators\n\tn2 is count of distinct operands.");
             break;
         default:
             printf("undefined topic\n");
