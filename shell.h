@@ -41,6 +41,7 @@ extern char time_str[9];
 void update_time();
 int update_pwd();
 int prompt();
+void parse_run(char *line);
 int tokenize(char **dest, char *source, char *delim);
 void expand(char **args, int len);
 int execute(char **args, int first_cmd, int last_cmd);

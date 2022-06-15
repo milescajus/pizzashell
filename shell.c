@@ -28,11 +28,17 @@ int main(int argc, char *argv[])
     if (argc > 1 && strcmp(argv[1], "-c") == 0) {
         // run command directly
 
+        /*
         for (int i = 0; i < argc; ++i)
             // copy args from argv
             *(args + i) = argv[i + 2];
+        */
+        if (argv[2] == NULL) {
+            puts("Usage: pzash -c [\033[4mcommand\033[0m]");
+            return -1;
+        }
 
-        execute(args, 1, 1);
+        parse_run(argv[2]);
 
     } else {
         // start interactive shell
@@ -79,6 +85,14 @@ int prompt()
     // add line to readline history
     add_history(line);
 
+    // parse and execute
+    parse_run(line);
+
+    return 0;
+}
+
+void parse_run(char *line)
+{
     int cmd_count = tokenize(cmds, line, "|");
 
     int first_cmd;
@@ -93,8 +107,6 @@ int prompt()
         last_cmd = (i == cmd_count - 1);
         execute(args, first_cmd, last_cmd);
     }
-
-    return 0;
 }
 
 int tokenize(char **dest, char *source, char *delim)
