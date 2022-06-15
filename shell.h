@@ -32,8 +32,8 @@ extern char **cmds;    // array of commands
 extern char **args;    // array of args per command
 
 // stack variables
-extern int fd1[2];     // first pipe fildes
-extern int fd2[2];     // second pipe fildes
+extern int nextfd[2];     // next pipe fildes
+extern int prevfd[2];     // previous pipe fildes
 extern pid_t pid;
 extern time_t rawtime;
 extern char time_str[9];

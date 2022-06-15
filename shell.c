@@ -9,8 +9,8 @@ char **args;    // array of args per command
 wordexp_t p;
 
 // stack variables
-int fd1[2];     // first pipe filedesc
-int fd2[2];     // second pipe filedesc
+int nextfd[2];     // next pipe fildes
+int prevfd[2];     // previous pipe fildes
 pid_t pid;
 char time_str[9];
 int status;
@@ -184,7 +184,7 @@ int execute(char **args, int first_cmd, int last_cmd)
 
     // pipe handling
     if (!last_cmd) {
-        if (pipe(fd2) < 0) {
+        if (pipe(nextfd) < 0) {
             perror("PIPE ERROR");
             return -1;
         }
@@ -202,15 +202,15 @@ int execute(char **args, int first_cmd, int last_cmd)
         case 0:
             // CHILD
             if (!first_cmd) {
-                dup2(fd1[0], 0);
-                close(fd1[0]);
-                close(fd1[1]);
+                dup2(prevfd[0], 0);     // set input to previous pipe
+                close(prevfd[0]);       // close previous pipe input
+                close(prevfd[1]);       // close previous pipe output
             }
 
             if (!last_cmd) {
-                close(fd2[0]);
-                dup2(fd2[1], 1);
-                close(fd2[1]);
+                close(nextfd[0]);       // close next pipe input
+                dup2(nextfd[1], 1);     // set output to next pipe
+                close(nextfd[1]);       // close next pipe output
             }
 
             if (execvp(command, args) < 0) { perror("pzash"); }
@@ -219,13 +219,15 @@ int execute(char **args, int first_cmd, int last_cmd)
         default:
             // PARENT
             if (!first_cmd) {
-                close(fd1[0]);
-                close(fd1[1]);
+                // close previous pipe
+                close(prevfd[0]);
+                close(prevfd[1]);
             }
 
             if (!last_cmd) {
-                fd1[0] = fd2[0];
-                fd1[1] = fd2[1];
+                // recycle previous pipe
+                prevfd[0] = nextfd[0];
+                prevfd[1] = nextfd[1];
             }
 
             waitpid(pid, &status, 0);
