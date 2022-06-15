@@ -1,27 +1,8 @@
 import io
 import os
-import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
-import shutil
 import pathlib
 import numpy as np
 import Readfile
-# halstead complexity_for_file
-#
-# Parameter	Meaning
-# n1	Number of unique operators + - = * / %  ** // =
-# n2	Number of unique operands
-# N1	Number of total occurrence of operators
-# N2	Number of total occurrence of operands
-#
-# Metric	Meaning	Mathematical Representation
-# n	Vocabulary	n1 + n2
-# N	Size	N1 + N2
-# V	Volume	Length * Log2 Vocabulary
-# D	Difficulty	(n1/2) * (N1/n2)
-# E	Efforts	Difficulty * Volume
-# B	Errors	Volume / 3000
-# T	Testing time	Time = Efforts / S, where S=18 seconds.
 
 operator_set = set({"+", "-", "=", "*", "/", "%", "**","//","=","+=","-=","*=","/=","%=","//=","**=","%=","|=","^=",">>=","<<=","==","!=",">","<",">=","<=","and","or","not","is","is not", "in","not in","&","|","^","~","<<",">>"})
 
@@ -70,9 +51,3 @@ def get_n1_n2(progarray):
             # for i in Count_code:
             #     print("Count_code:",i)
     return Count
-
-# Number of unique operand
-# def get_n2(progarray):# Number of total occurrence of operators
-# def get_N1(progarray):
-# # Number of total occurrence of operands
-# def get_N2(progarray):

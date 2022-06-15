@@ -45,27 +45,14 @@ def get_LOC_In_All_Subirectories(progarray):
                 Open = True
             # open file and count lines if it is one we care about
             if (Open == True):
-                # print("i is: \n",i)
-                # print("Count shape",Count.shape)
-                # Currentfilepath = i.parent + "/"+ i.name +"/"+ Suffixnum
-                # Currentfile = Currentfilepath.read_text()
+
                 Currentfile = i.read_text()
-                # use bloom filter?
                 Lines = len([l.strip() for l in Currentfile.splitlines()])
-                # print(" array Shape",np.array([i.name,Lines]).shape)
-                # print("Program name:", i. name)
-                # print("\n",Lines)
                 Count.append([i.name,Lines])
-                # print(" array Shape",np.array([i.name,Lines]).shape)
-                # print("Count shape",Count.shape)
-                
                 Open = False
-            # for i in Count_code:
-            #     print("Count_code:",i)
     return Count
 def Switch_suffix(suffix):
     #switch statement on suffix to number
-
     if(suffix == '.py'):
         return  1
     elif(suffix == ".c"):
@@ -80,28 +67,3 @@ def Switch_suffix(suffix):
     elif(suffix == 3):
         return '.h'
     return "Suffix not in language"
-#     folder = r"<MAIN FOLDER>"
-#     subfolders = [f.path for f in os.scandir(folder) if f.is_dir()]
-#         for sub in subfolders:
-#             for f in os.listdir(sub):
-#                 src = os.path.join(sub, f):
-#
-#             # create document term matrix
-#             df_dtm = pd.DataFrame(cv_matrix.toarray(), index=df['TEMP'].values, columns=cv.get_feature_names())
-#             view raw
-#
-#             # initialize
-#             df = pd.DataFrame({'TEMP': ['OpenMP', 'MPi', 'Fortran'], 'text':texts})
-#             cv = CountVectorizer()
-#             cv_matrix = cv.fit_transform(df['text'])
-#
-#
-# # stream = io.open("file.txt", "r")
-# buffered_reader = io.BufferedReader(stream)
-# # set the stream to byte 250
-# buffered_reader.seek(250)
-# # read up to byte 750 (500 bytes from position 250)
-# data = buffered_reader.read(500)
-#
-#
-# from sklearn.feature_extraction.text import CountVectorizer
