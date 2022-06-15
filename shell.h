@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <sys/param.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
 #include <wordexp.h>
@@ -43,7 +44,7 @@ int update_pwd();
 int prompt();
 void parse_run(char *line);
 int tokenize(char **dest, char *source, char *delim);
-void expand(char **args, int len);
+int expand(char **args, int len);
 int execute(char **args, int first_cmd, int last_cmd);
 
 // built-ins

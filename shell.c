@@ -13,6 +13,8 @@ int fd1[2];     // first pipe filedesc
 int fd2[2];     // second pipe filedesc
 pid_t pid;
 char time_str[9];
+int status;
+int exit_status;
 
 int main(int argc, char *argv[])
 {
@@ -71,7 +73,10 @@ int prompt()
     update_time();
 
     // print prompt
-    printf("\n\033[31;1m%s\033[0m [%s]\n", pwd, time_str);
+    printf("\n\033[31;1m%s\033[0m [%s]", pwd, time_str);
+    if (exit_status)
+        printf(" C: \033[91m%d\033[0m", exit_status);
+    printf("\n");
     line = readline("🍕\033[38;5;220m$\033[0m ");
 
     // handle Ctrl-D
@@ -101,11 +106,14 @@ void parse_run(char *line)
     for (int i = 0; i < cmd_count; ++i) {
         int arg_count = tokenize(args, *(cmds + i), " ");
 
-        expand(args, arg_count);
+        if (expand(args, arg_count) < 0)
+            return;
 
         first_cmd = (i == 0);
         last_cmd = (i == cmd_count - 1);
-        execute(args, first_cmd, last_cmd);
+
+        if (execute(args, first_cmd, last_cmd) < 0)
+            return;
     }
 }
 
@@ -125,7 +133,7 @@ int tokenize(char **dest, char *source, char *delim)
     return len;
 }
 
-void expand(char **args, int len)
+int expand(char **args, int len)
 {
     // performs sh-like word expansion
     // i.e. replaces special chars like ~, $, *
@@ -134,8 +142,24 @@ void expand(char **args, int len)
         char **w;
 
         // expand special characters
-        if (wordexp(*(args + i), &p, 0))
-            perror("expansion: ");
+        int err = wordexp(*(args + i), &p, 0);
+        switch (err) {
+            case WRDE_BADCHAR:
+                puts("illegal character");
+                break;
+            case WRDE_BADVAL:
+                puts("undefined variable");
+                break;
+            case WRDE_NOSPACE:
+                puts("out of memory");
+                break;
+            case WRDE_SYNTAX:
+                puts("syntax error");
+                break;
+        }
+
+        if (err)
+            return -1;
 
         w = p.we_wordv;
 
@@ -154,6 +178,8 @@ void expand(char **args, int len)
         // update total len
         len += offset;
     }
+
+    return 0;
 }
 
 int execute(char **args, int first_cmd, int last_cmd)
@@ -173,6 +199,7 @@ int execute(char **args, int first_cmd, int last_cmd)
                 return -1;
             }
 
+            exit_status = 0;
             return 0;
         }
     }
@@ -223,7 +250,9 @@ int execute(char **args, int first_cmd, int last_cmd)
                 fd1[1] = fd2[1];
             }
 
-            wait(NULL);
+            waitpid(pid, &status, 0);
+            if (WIFEXITED(status))
+                exit_status = WEXITSTATUS(status);
             break;
     }
 
