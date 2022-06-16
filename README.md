@@ -17,9 +17,8 @@ PizzaSHELL (a.k.a.) pzash
   - [x] `cd` with previous directory switching (`$ cd -`)
   - [x] Help function
   - [x] Two-operand math
-  - [x] File info
+  - [x] File info (simplified `lstat`)
   - [x] Echo
-  - [x] Complexity analysis (python script)
 
 ### TODO
 - [ ] Expose `<math.h>` functions?
