@@ -197,28 +197,6 @@ int echo(char **args)
     return 0;
 }
 
-int canal()
-{
-    if (!fork()) {
-        execlp("python3", "python3", "./complexity/Main.py", NULL);
-    } else {
-        wait(NULL);
-    }
-
-    return 0;
-}
-
-int hanal()
-{
-    if (!fork()) {
-        execlp("python3", "python3", "./complexity/Main.py", "-h", NULL);
-    } else {
-        wait(NULL);
-    }
-
-    return 0;
-}
-
 // HELPER FUNCTIONS
 int update_pwd()
 {
