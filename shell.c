@@ -13,7 +13,6 @@ int nextfd[2];     // next pipe fildes
 int prevfd[2];     // previous pipe fildes
 pid_t pid;
 char time_str[9];
-int status;
 int exit_status;
 
 int main(int argc, char *argv[])
@@ -67,12 +66,10 @@ int prompt()
 
     update_time();
 
-    // print prompt
-    printf("\n\033[31;1m%s\033[0m [%s]", pwd, time_str);
-    if (exit_status)
-        printf(" C: \033[91m%d\033[0m", exit_status);
-    printf("\n");
-    line = readline("🍕\033[38;5;220m$\033[0m ");
+    // build prompt and get input
+    char *prompt_str = build_prompt();
+    line = readline(prompt_str);
+    free(prompt_str);
 
     // handle Ctrl-D
     if (!line)
@@ -238,6 +235,7 @@ int execute(char **args, int first_cmd, int last_cmd)
                 prevfd[1] = nextfd[1];
             }
 
+            int status;
             waitpid(pid, &status, 0);
             if (WIFEXITED(status))
                 exit_status = WEXITSTATUS(status);

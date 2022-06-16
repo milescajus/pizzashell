@@ -214,8 +214,34 @@ int update_pwd()
     return 0;
 }
 
-void update_time()
+int update_time()
 {
     rawtime = time(NULL);
-    strftime(time_str, 9, "%T", localtime(&rawtime));
+    if(!strftime(time_str, 9, "%T", localtime(&rawtime)))
+        return -1;
+
+    return 0;
+}
+
+char *build_prompt()
+{
+    char *prompt_str;
+    char *err_str;
+
+    if (asprintf(&prompt_str, "\n\033[31;1m%s\033[0m [%s]", pwd, time_str) < 0) {
+        perror("prompt: ");
+        exit(1);
+    }
+
+    if (asprintf(&err_str, " C: \033[91m%d\033[0m", exit_status) < 0) {
+        perror("prompt: ");
+        exit(1);
+    }
+
+    if (exit_status)
+        strcat(prompt_str, err_str);
+    strcat(prompt_str, "\n🍕\033[38;5;220m$\033[0m ");
+
+    free(err_str);
+    return prompt_str;
 }

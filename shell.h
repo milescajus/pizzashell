@@ -26,10 +26,10 @@
 #define builtin_count 5
 
 // heap variables
-extern char     *pwd;       // current directory
-extern char     *line;      // user input, malloc by readline
-extern char     **cmds;     // array of commands
-extern char     **args;     // array of args per command
+extern char    *pwd;        // current directory
+extern char    *line;       // user input, malloc by readline
+extern char   **cmds;       // array of commands
+extern char   **args;       // array of args per command
 
 // stack variables
 extern int      nextfd[2];  // next pipe fildes
@@ -37,10 +37,9 @@ extern int      prevfd[2];  // previous pipe fildes
 extern pid_t    pid;
 extern time_t   rawtime;
 extern char     time_str[9];
+extern int      exit_status;
 
 // shell.c functions
-void    update_time();
-int     update_pwd();
 int     prompt();
 void    parse_run(char *line);
 int     tokenize(char **dest, char *source, char *delim);
@@ -53,6 +52,11 @@ int     help(char **args);
 int     info(char **args);
 int     math(char **args);
 int     echo(char **args);
+
+// helper functions
+int     update_time();
+int     update_pwd();
+char   *build_prompt();
 
 // function pointers
 extern int (*builtins[builtin_count]) (char **);
