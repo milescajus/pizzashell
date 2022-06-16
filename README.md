@@ -28,3 +28,6 @@ PizzaSHELL (a.k.a.) pzash
 - [ ] Multiline input
 - [ ] Command autocompletion
 - [ ] Pizza ordering
+
+### Known Bugs
+- currently SIGINT (sent by Ctrl-C) is caught by the parent process, killing the whole shell rather than just the forked child
