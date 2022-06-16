@@ -75,7 +75,7 @@ int prompt()
     line = readline("🍕\033[38;5;220m$\033[0m ");
 
     // handle Ctrl-D
-    if (line == NULL)
+    if (!line)
         return 1;
 
     // handle empty input
