@@ -26,35 +26,35 @@
 #define builtin_count 5
 
 // heap variables
-extern char *pwd;      // current directory
-extern char *line;     // user input, malloc by readline
-extern char **cmds;    // array of commands
-extern char **args;    // array of args per command
+extern char     *pwd;       // current directory
+extern char     *line;      // user input, malloc by readline
+extern char     **cmds;     // array of commands
+extern char     **args;     // array of args per command
 
 // stack variables
-extern int nextfd[2];     // next pipe fildes
-extern int prevfd[2];     // previous pipe fildes
-extern pid_t pid;
-extern time_t rawtime;
-extern char time_str[9];
+extern int      nextfd[2];  // next pipe fildes
+extern int      prevfd[2];  // previous pipe fildes
+extern pid_t    pid;
+extern time_t   rawtime;
+extern char     time_str[9];
 
 // shell.c functions
-void update_time();
-int update_pwd();
-int prompt();
-void parse_run(char *line);
-int tokenize(char **dest, char *source, char *delim);
-int expand(char **dest, char *source);
-int execute(char **args, int first_cmd, int last_cmd);
+void    update_time();
+int     update_pwd();
+int     prompt();
+void    parse_run(char *line);
+int     tokenize(char **dest, char *source, char *delim);
+int     expand(char **dest, char *source);
+int     execute(char **args, int first_cmd, int last_cmd);
 
-// built-ins
-int cd(char **args);
-int help(char **args);
-int info(char **args);
-int math(char **args);
-int echo(char **args);
-int canal();
-int hanal();
+// built-in functions
+int     cd(char **args);
+int     help(char **args);
+int     info(char **args);
+int     math(char **args);
+int     echo(char **args);
+
+// function pointers
 extern int (*builtins[builtin_count]) (char **);
 extern char *builtin_names[builtin_count];
 
