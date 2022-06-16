@@ -25,4 +25,5 @@ PizzaSHELL (a.k.a.) pzash
 - [ ] Expose `<math.h>` functions?
 - [ ] Aliases (e.g. `ll=ls -l; ls=ls -g; grep=grep --color`)
   - especially for color-by-default
+- [ ] Piping builtins
 - [ ] Pizza ordering
