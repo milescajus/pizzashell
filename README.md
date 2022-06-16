@@ -3,7 +3,7 @@ PizzaSHELL (a.k.a.) pzash
 
 ## Features
 ### Implemented
-- [x] Editable input, history, and basic autocompletion (through `<readline.h>`)
+- [x] Editable input, history, and filename autocompletion (through `<readline.h>`)
 - [x] Pizza prompt 🍕 (shows current working directory and timestamp)
 - [x] Piping!
 - [x] Special character expansion (currently only `$` and `~`)
@@ -21,8 +21,10 @@ PizzaSHELL (a.k.a.) pzash
   - [x] Echo
 
 ### TODO
-- [ ] Expose `<math.h>` functions?
+- [ ] Expose `<math.h>` functions
 - [ ] Aliases (e.g. `ll=ls -l; ls=ls -g; grep=grep --color`)
   - especially for color-by-default
 - [ ] Piping builtins
+- [ ] Multiline input
+- [ ] Command autocompletion
 - [ ] Pizza ordering
