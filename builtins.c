@@ -3,13 +3,13 @@
 time_t rawtime;
 
 // LIST OF BUILT-INS
-int (*builtins[]) (char **) = {&cd, &help, &info, &math, &echo, &canal, &hanal};
-char *builtin_names[] = {"cd", "help", "info", "math", "echo", "canal", "hanal"};
+int (*builtins[]) (char **) = {&cd, &help, &info, &math, &echo};
+char *builtin_names[] = {"cd", "help", "info", "math", "echo"};
 
 // HELP TOPICS
-enum topics {HELP, TOPICS, BUILTINS, CD, INFO, MATH, ECHO, PIZZA, CANAL, HANAL};
-char *help_topics[] = {"help", "topics", "builtins", "cd", "info", "math", "echo", "pizza", "canal", "hanal"};
-int topic_count = 10;
+enum topics {HELP, TOPICS, BUILTINS, CD, INFO, MATH, ECHO, PIZZA};
+char *help_topics[] = {"help", "topics", "builtins", "cd", "info", "math", "echo", "pizza"};
+int topic_count = 8;
 
 // ACTUAL BUILT-IN FUNCTIONS
 int help(char **args)
@@ -34,13 +34,16 @@ int help(char **args)
             puts("Usage: help [\033[4mtopic\033[0m]");
             break;
         case TOPICS:
-            printf("Help topics: ");
+            puts("Help topics: ");
             for (int i = 0; i < topic_count; ++i)
                 printf("%s ", help_topics[i]);
-            printf("\n");
+            puts("");
             break;
         case BUILTINS:
-            puts("Available built-in functions:\ncd, help, info, math, echo, canal, hanal");
+            puts("Available built-in functions:");
+            for (int i = 0; i < builtin_count; ++i)
+                printf("%s ", builtin_names[i]);
+            puts("");
             break;
         case CD:
             puts("Usage: cd [-|\033[4mdirectory\033[0m]");
@@ -56,12 +59,6 @@ int help(char **args)
             break;
         case PIZZA:
             puts("It is delicious. Need I say more?");
-            break;
-        case CANAL:
-            puts("Analyze the current directory and all subdirectories. Prints lines of code for each file with extension '.c', '.h', or '.py'.");
-            break;
-        case HANAL:
-            puts("Analyze the current directory and all subdirectories. Prints Halstead vocabulary for each file with extension '.c' '.h' or '.py'.\n\tn1 is count of distinct operators\n\tn2 is count of distinct operands.");
             break;
         default:
             puts("undefined topic");

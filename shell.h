@@ -23,7 +23,7 @@
     #include <sys/wait.h>
 #endif
 
-#define builtin_count 7
+#define builtin_count 5
 
 // heap variables
 extern char *pwd;      // current directory
